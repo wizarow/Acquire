@@ -1,0 +1,13 @@
+{
+  "name": "acquire",
+  "version": "1.1.0",
+  "description": "Acquire: hidden items, anonymous writers. Online rooms and a one-phone mode.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "node build.js"
+  },
+  "engines": { "node": ">=18" },
+  "license": "UNLICENSED",
+  "private": true
+}
