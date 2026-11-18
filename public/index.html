@@ -84,6 +84,19 @@ button{-webkit-appearance:none;appearance:none}
 .pips{display:grid;gap:6px}
 .pips i{height:9px;border-radius:5px;background:var(--off)}
 .pips i.on{background:var(--hi)}
+.pchip{min-height:34px;padding:0 12px;border-radius:17px;border:2.5px solid var(--fg);display:inline-flex;align-items:center;gap:6px;font-size:calc(15px*var(--fs));font-weight:800;max-width:100%;overflow-wrap:anywhere}
+.pchip small{font-size:calc(11px*var(--fs));font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.pchip.away{border-style:dashed;opacity:.7}
+.pad>[data-r=timer]:empty{display:none}
+.timer{display:flex;align-items:center;gap:14px;padding:10px 16px;border:3px solid var(--fg);border-radius:18px}
+.timer .tnum{font-family:var(--display);font-weight:900;font-size:40px;line-height:.95;font-variant-numeric:tabular-nums;min-width:2.3ch}
+.timer .tside{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.timer .tlab{font-size:calc(14px*var(--fs));font-weight:700;line-height:1.2;overflow-wrap:anywhere}
+.timer .tbar{height:9px;border-radius:5px;background:var(--off);overflow:hidden}
+.timer .tbar i{display:block;height:100%;border-radius:5px;background:var(--hi)}
+.timer.urgent,.timer.up{background:var(--btn);color:var(--btn-fg);border-color:var(--btn)}
+.timer.urgent .tbar,.timer.up .tbar{background:rgba(128,128,128,.4)}
+.timer.urgent .tbar i{background:var(--btn-fg)}
 
 /* ---------- home ---------- */
 .home .pad{justify-content:space-between}
@@ -356,7 +369,7 @@ var ERR = {
   network: "Can't reach the server.", no_room: 'No room with that code.', room_full: 'That room is full.',
   slow_down: 'Easy. Try again in a moment.', host_only: 'Only the host can do that.', need_players: 'You need at least 2 players.',
   need_category: 'Pick a category first.', wrong_phase: 'The round already moved on.', empty: 'Write something first.', too_long: 'Too many words.',
-  nobody_locked: 'Nobody has locked in yet.', not_in_room: 'You are not in that room.', already_locked: 'Already locked in.',
+  nobody_locked: 'Nobody has locked in yet.', not_in_room: 'You are not in that room.', already_locked: 'Already locked in.', time_up: 'Time’s up. Too late to lock in.',
   host_taken: 'Someone is already hosting.', seat_taken: 'That codename is already back in.', no_seat: 'That codename is gone.',
   busy: 'Servers are busy. Try again.', too_large: 'That was too big.', bad_json: 'Something went wrong.',
   removed: 'The host removed you from that room.', no_player: 'That player is already gone.', cant_remove_self: 'You cannot remove yourself.'
@@ -385,8 +398,8 @@ var START_LABEL = LOCAL ? 'Start a game' : 'Start a room';
 var S = {
   screen: 'home', mode: LOCAL ? 'local' : (DEMO ? 'demo' : 'live'), code: null, snap: null, net: 'ok', key: '',
   joinCode: '', joinErr: '', joining: false, locking: false, seats: null, seatsCode: null,
-  draft: { words: 4, spicy: false, answers: 'all', mode: 'rec', category: null, custom: '' },
-  learned: [], lmap: {}, expanded: {}, sheet: null,
+  draft: { words: 4, spicy: false, answers: 'all', timer: 0, mode: 'rec', category: null, custom: '' },
+  learned: [], lmap: {}, expanded: {}, sheet: null, skew: 0,
   cm: 'open', flipNext: false, confettiNext: false, animateReveal: false, cardsCache: '', closeT: null,
   ui: { size: 'm', theme: 'classic' }, nameDraft: null, rmConfirm: null
 };
@@ -550,6 +563,39 @@ function themeSection() {
     return '<button type="button" class="theme" data-act="theme" data-v="' + k + '" aria-pressed="' + (S.ui.theme === k) + '"><span class="sw" style="--a:' + t.a + ';--b:' + t.b + '"></span>' + t.n + '</button>';
   }).join('') + '</div><p class="note">NSFW rooms always stay plum.</p></section>';
 }
+var TIMER_LABELS = { 0: 'Off', 30: '30 s', 60: '1 min', 120: '2 min', 180: '3 min' };
+function timerSection() {
+  var t = S.draft.timer || 0;
+  return '<section class="sec"><h2>Round timer</h2><div class="seg fx" role="group" aria-label="Round timer">' + E.TIMERS.map(function (v) {
+    return '<button type="button" data-act="timer" data-v="' + v + '" aria-pressed="' + (t === v) + '">' + TIMER_LABELS[v] + '</button>';
+  }).join('') + '</div><p class="note">' + (t ? 'Everyone gets ' + TIMER_LABELS[t] + ' to write. At zero, whatever is typed locks in.' : 'Off. No time limit.') + '</p></section>';
+}
+function fmtTime(ms) { var t = Math.max(0, Math.ceil(ms / 1000)), m = Math.floor(t / 60), r = t % 60; return m + ':' + (r < 10 ? '0' : '') + r; }
+function timerHTML() {
+  var s = S.snap, left = timeLeft();
+  if (left == null || s.allLocked) return '';
+  var tot = s.settings.timer * 1000, up = left <= 0, urgent = !up && left <= 10000, mine = !!(s.me && s.me.locked);
+  var pct = up ? 0 : Math.max(0, Math.min(100, Math.round(left / tot * 100)));
+  var lab = up ? (mine ? 'Time’s up.' : 'Time’s up. Too late to lock in.') : (mine ? 'left. You’re locked in.' : 'left to write');
+  return '<div class="timer' + (urgent ? ' urgent' : '') + (up ? ' up' : '') + '" role="timer"><p class="tnum">' + fmtTime(left) + '</p><div class="tside"><p class="tlab">' + lab + '</p><div class="tbar"><i style="width:' + pct + '%"></i></div></div></div>';
+}
+// One light ticker while a timed round is running. At zero, a valid draft locks in by itself.
+function tick() {
+  var s = S.snap, left = timeLeft();
+  if (left == null) { syncTick(); return; }
+  patchRegions('timer');
+  if (left > 0) return;
+  if (s.me && !s.me.locked && !s.allLocked) {
+    if (S.autoRound !== s.round) { S.autoRound = s.round; var a = curAns(); if (a.ok && !S.locking) ACT.lock(); }
+    var el = $('#ans'); if (el) el.disabled = true;
+  }
+  patchRegions('lockbtn'); patchRegions('hostbar');
+}
+function syncTick() {
+  var on = timeLeft() != null;
+  if (on && !S.tickT) S.tickT = setInterval(tick, 250);
+  else if (!on && S.tickT) { clearInterval(S.tickT); S.tickT = null; }
+}
 function removeSection() {
   var s = S.snap, others = s.players.filter(function (p) { return !p.isMe; });
   if (!others.length) return '<section class="sec"><h2>Remove a player</h2><p class="note">Nobody else is in the room yet.</p></section>';
@@ -567,7 +613,7 @@ function settingsSheetHTML() {
   if (inRoom) h += nameSection('sheet');
   h += sizeSection() + themeSection();
   if (inRoom && s.me.isHost) {
-    if (s.phase === 'lobby') h += answersSection();
+    if (s.phase === 'lobby') h += answersSection() + timerSection();
     h += removeSection();
   }
   return h + '<button type="button" class="btn-main" data-act="close">Done</button></div></div>';
@@ -657,8 +703,9 @@ function rulesView() {
   var shide = sec('Showing and hiding answers', '<ul><li>The host reveals the answers, reads them out twice, then taps Hide all. They vanish on every phone. Show all brings them back.</li><li>Before the round starts the host can pick who sees the answers, in Settings (the gear next to your name). Everyone sees: the answers show on every phone. Host only: only the host’s phone shows them. Everyone else sees covers, so listen and remember.</li><li>In Host only mode the host has just End round, since there is nothing to hide.</li></ul>');
   var yourname = sec('Your name', '<ul><li>You start with a random codename. Open Settings (the gear next to your name) to type your own name instead. Up to 16 characters.</li><li>Leave it blank to keep the random one. If someone already has your name, a 2 is added.</li><li>Your recent names are saved on your own phone, so you can tap one next time.</li><li>Names never appear next to answers.</li></ul>');
   var removing = sec('Removing a player', '<ul><li>The host can remove a player: Settings, then Remove next to their name. Good for someone who has dropped off or is not playing.</li><li>The player is told they were removed and cannot rejoin from that tab.</li><li>If answers are not revealed yet, a removed player’s answer goes with them. If they are, the cards stay as they are.</li></ul>');
+  var timer = sec('Round timer', '<ul><li>Before the round starts the host can set a timer in Settings (the gear next to your name). It is off by default.</li><li>Everyone sees the countdown while writing. At zero, whatever you have typed locks in by itself. If it is not a valid answer, you miss the round.</li><li>The host then reveals. Anyone who did not lock in is left out.</li></ul>');
   var looks = sec('Text size and colours', '<p>Settings also has a text size and a few colour schemes. They are saved on your own phone and do not affect anyone else. NSFW rooms always stay plum.</p>');
-  var writing = sec('Writing', '<p>Type your answer and lock it in. You cannot change it after that. Nobody sees any answer until the reveal.</p>');
+  var writing = sec('Writing', '<p>Type your answer and lock it in. You cannot change it after that. Nobody sees any answer until the reveal.' + (LOCAL ? '' : ' Once you have locked in, you can see who is still writing.') + '</p>');
   var body;
   if (LOCAL) {
     body = sec('The goal', '<p>Everyone writes one hidden item on one shared phone. Reveal them all, read them out twice, then hide them again. Then catch the writers.</p>') + acquire +
@@ -669,10 +716,10 @@ function rulesView() {
   } else {
     body = sec('The goal', '<p>Everyone writes one hidden item. The host reveals them all, reads them out twice, then hides them again. Then you catch the writers.</p>') + acquire +
       sec('Rooms', '<p>Someone starts a room and shares the 4-letter code or the link. Up to 20 players. Everyone gets a random codename, so there are no accounts. You can swap yours for your own name in Settings.</p>') + yourname +
-      sec('The host', '<ul><li>One host at a time. After joining, one player taps I’ll host. First tap wins.</li><li>The host picks the category, the word limit, SFW or NSFW and who sees the answers, then starts the round.</li><li>The host reveals, reads the answers out twice, then hides them. Show them again whenever you like.</li><li>The host ends the round. The winner then taps I won and becomes the next host, and picks the next category.</li><li>A host can step down before starting. If the host drops, someone can take over after a few seconds.</li></ul>') + shide + removing + words +
-      sec('Categories', '<ul><li>Recommended: suggestions grouped by theme. The most played come first. Tap More to see the rest.</li><li>My own: type any category.</li><li>Every round needs a category.</li></ul>') + nsfw + writing + looks +
+      sec('The host', '<ul><li>One host at a time. After joining, one player taps I’ll host. First tap wins.</li><li>The host picks the category, the word limit, SFW or NSFW and who sees the answers, then starts the round.</li><li>The host reveals, reads the answers out twice, then hides them. Show them again whenever you like.</li><li>The host ends the round. The winner then taps I won and becomes the next host, and picks the next category.</li><li>A host can step down before starting. If the host drops, someone can take over after a few seconds.</li></ul>') + shide + removing + timer + words +
+      sec('Categories', '<ul><li>Recommended: suggestions grouped by theme. Tap More to see the rest.</li><li>My own: type any category.</li><li>Every round needs a category.</li></ul>') + nsfw + writing + looks +
       sec('Dropped off?', '<p>Reopen the link. Same tab: you are straight back in. New tab or device: tap your codename from the list. Your locked answer is kept.</p>') +
-      sec('Privacy', '<p>Answers live in the room’s memory only. They vanish when the round ends or the room closes. The one thing saved is the category name and how often it gets played. Never answers, never names. Your recent names and display settings stay on your own phone.</p>');
+      sec('Privacy', '<p>Answers live in the room’s memory only. They vanish when the round ends or the room closes. Nothing else is stored on the server: no answers, no names. Your recent names and display settings stay on your own phone.</p>');
   }
   return '<main class="scr pal-paper"><div class="pad">' + topRow(BACK, 'Rulebook', SPACER) + '<h2 class="disp big">The rules</h2><div class="rb">' +
     '<p class="quote">Write it. Lock it. Nobody peeks.</p>' + body +
@@ -716,7 +763,7 @@ function writingView() {
     : '<div class="field"><input class="text-in" id="ans" maxlength="' + MAX_CHARS + '" autocomplete="off" autocapitalize="sentences" enterkeyhint="done" placeholder="Type your hidden item" aria-label="Your hidden item"><p class="wc" data-r="wc"></p></div>' +
       '<div class="stack"><div data-r="lockbtn"></div><p class="caption">Nobody sees it until the host reveals.</p></div><div class="prog" data-r="progress"></div><div data-r="hostbar" class="stack"></div>';
   return '<main class="scr pal-green' + (s.settings.spicy ? ' spicy' : '') + '"><div class="pad">' +
-    '<div class="row">' + LEAVE + '<p class="eyebrow">Room ' + esc(S.code) + '</p>' + meTag() + '</div>' + prompt + body + '</div></main>';
+    '<div class="row">' + LEAVE + '<p class="eyebrow">Room ' + esc(S.code) + '</p>' + meTag() + '</div>' + prompt + '<div data-r="timer"></div>' + body + '</div></main>';
 }
 var CARD_COLS = [['var(--saffron)', 'var(--ink)'], ['var(--mint)', 'var(--ink)'], ['var(--tomato)', 'var(--ink)'], ['var(--cream)', 'var(--ink)'], ['var(--cobalt)', 'var(--cream)']];
 var CARD_COLS_S = [['var(--pink)', 'var(--plum)'], ['var(--cream)', 'var(--plum)'], ['var(--plum-2)', 'var(--cream)'], ['#FF8CC0', 'var(--plum)']];
@@ -754,6 +801,13 @@ function viewHTML() {
 }
 
 /* ---------- regions: patched in place so inputs keep focus ---------- */
+// Milliseconds left on the round timer, or null when there is none. Online only: the server sets timerEnd.
+function timeLeft() {
+  var s = S.snap;
+  if (LOCAL || !s || s.phase !== 'writing' || !s.settings.timer || !s.timerEnd) return null;
+  return s.timerEnd - (Date.now() + S.skew);
+}
+function timeUp() { var t = timeLeft(); return t != null && t <= 0; }
 function curAns() {
   var el = $('#ans'), text = E.clean(el ? el.value : '', MAX_CHARS), n = text ? text.split(' ').length : 0, max = S.snap ? S.snap.settings.words : 4;
   return { text: text, n: n, max: max, ok: n >= 1 && n <= max };
@@ -830,18 +884,25 @@ var REGIONS = {
     var line = c.ok ? '<p class="caption">Category: <b>' + esc(cat.label) + '</b> · up to ' + d.words + ' word' + (d.words === 1 ? '' : 's') + (d.spicy ? ' · NSFW' : '') + (d.answers === 'host' ? ' · host-only answers' : '') + '</p>' : '<p class="caption">' + esc(c.why) + '</p>';
     return line + '<button type="button" class="btn-main" data-act="begin"' + (c.ok ? '' : ' disabled') + '>Start round ' + I.arrow + '</button>';
   },
+  timer: function () { return timerHTML(); },
   wc: function () {
     var a = curAns(); return a.n > a.max ? '<span class="wc bad">' + a.n + ' / ' + a.max + ' words. Too many.</span>' : a.n + ' / ' + a.max + ' words';
   },
   lockbtn: function () {
-    var a = curAns(), dis = !a.ok || S.locking;
+    var a = curAns(), dis = !a.ok || S.locking || timeUp();
     return '<button type="button" class="btn-main" data-act="lock"' + (dis ? ' disabled' : '') + '>' + (S.locking ? 'Locking…' : 'Lock it in') + ' ' + I.lock + '</button>';
   },
   progress: function () {
     var s = S.snap; if (!s) return '';
     var n = s.players.length, pips = '';
     for (var i = 0; i < n; i++) pips += '<i' + (i < s.lockedCount ? ' class="on"' : '') + '></i>';
-    return '<div class="pips" style="grid-template-columns:repeat(' + n + ',1fr)" aria-hidden="true">' + pips + '</div><p class="caption">' + s.lockedCount + ' of ' + n + ' locked</p>';
+    var out = '<div class="pips" style="grid-template-columns:repeat(' + n + ',1fr)" aria-hidden="true">' + pips + '</div><p class="caption">' + s.lockedCount + ' of ' + n + ' locked</p>';
+    // Once your own answer is in, see who is still writing.
+    var pend = (!LOCAL && s.me && s.me.locked) ? s.players.filter(function (p) { return !p.locked; }) : [];
+    if (pend.length) out += '<p class="sub">' + (timeUp() ? 'Did not lock in' : 'Still writing') + '</p><div class="chips">' + pend.map(function (p) {
+      return '<span class="pchip' + (p.connected ? '' : ' away') + '">' + esc(p.alias) + (p.connected ? '' : ' <small>away</small>') + '</span>';
+    }).join('') + '</div>';
+    return out;
   },
   hostbar: function () {
     var s = S.snap; if (!s || !s.me) return '';
@@ -852,6 +913,7 @@ var REGIONS = {
     var waiting = s.players.length - s.lockedCount, main;
     if (s.lockedCount === 0) main = '<p class="caption">You reveal once the first answer is in.</p>';
     else if (s.allLocked) main = '<button type="button" class="btn-main" data-act="reveal">Reveal all ' + I.arrow + '</button>';
+    else if (timeUp()) main = '<button type="button" class="btn-main" data-act="reveal">Reveal now ' + I.arrow + '</button>';
     else main = '<button type="button" class="btn-ghost" data-act="reveal">Reveal without the rest (' + waiting + ' waiting)</button>';
     return main + '<button type="button" class="btn-ghost sm" data-act="end">Cancel round</button>';
   },
@@ -931,6 +993,7 @@ function render() {
   }
   patchRegions();
   afterPatch();
+  syncTick();
   paintSheet(); paintNet();
 }
 function afterMount(key) {
@@ -992,10 +1055,11 @@ function loadLearned() {
 }
 function draftFromSnap(s) {
   var cat = s.settings.category;
-  S.draft = { words: s.settings.words, spicy: s.settings.spicy, answers: s.settings.answers || 'all', mode: cat && cat.pack === 'custom' ? 'own' : 'rec', category: cat && cat.pack !== 'custom' ? cat : null, custom: cat && cat.pack === 'custom' ? cat.label : '' };
+  S.draft = { words: s.settings.words, spicy: s.settings.spicy, answers: s.settings.answers || 'all', timer: s.settings.timer || 0, mode: cat && cat.pack === 'custom' ? 'own' : 'rec', category: cat && cat.pack !== 'custom' ? cat : null, custom: cat && cat.pack === 'custom' ? cat.label : '' };
 }
 function onSnap(snap) {
   var prev = S.snap; S.snap = snap;
+  if (snap.now) S.skew = snap.now - Date.now();
   if (!LOCAL && snap.me && S.code) saveLast(S.code, snap.me.alias);
   var wasHostLobby = !!(prev && prev.phase === 'lobby' && prev.me && prev.me.isHost);
   if (snap.phase === 'lobby' && snap.me && snap.me.isHost && !wasHostLobby) { draftFromSnap(snap); loadLearned(); }
@@ -1025,7 +1089,7 @@ function leaveRoom() {
   modeReady.then(function () { return T.act(c, { type: 'leave' }); }).catch(function () {});
 }
 function startRoom() {
-  modeReady.then(function () { return T.create(savedName()); }).then(function (r) { S.draft = { words: 4, spicy: false, answers: 'all', mode: 'rec', category: null, custom: '' }; enterRoom(r.code); }).catch(function (e) { toast(errMsg(e)); });
+  modeReady.then(function () { return T.create(savedName()); }).then(function (r) { S.draft = { words: 4, spicy: false, answers: 'all', timer: 0, mode: 'rec', category: null, custom: '' }; enterRoom(r.code); }).catch(function (e) { toast(errMsg(e)); });
 }
 // Join by code. If players in a running room dropped off, offer their codenames first.
 function doJoin(code, opts) {
@@ -1050,7 +1114,7 @@ function pushSettings(now) {
   var send = function () {
     if (!S.code || !isHost() || S.snap.phase !== 'lobby') return;
     var d = S.draft;
-    T.act(S.code, { type: 'settings', words: d.words, spicy: d.spicy, answers: d.answers, category: effCategory() }).catch(function () {});
+    T.act(S.code, { type: 'settings', words: d.words, spicy: d.spicy, answers: d.answers, timer: d.timer, category: effCategory() }).catch(function () {});
   };
   if (now) send(); else pushTimer = setTimeout(send, 250);
 }
@@ -1121,7 +1185,7 @@ var ACT = {
   begin: function () {
     var c = canStart(); if (!c.ok) { if (c.why) toast(c.why); return; }
     var d = S.draft; clearTimeout(pushTimer);
-    send({ type: 'start', settings: { words: d.words, spicy: d.spicy, answers: d.answers, category: effCategory() } });
+    send({ type: 'start', settings: { words: d.words, spicy: d.spicy, answers: d.answers, timer: d.timer, category: effCategory() } });
   },
   lock: function () {
     var a = curAns(); if (!a.ok || S.locking) return;
@@ -1137,6 +1201,7 @@ var ACT = {
   end: function () { send({ type: 'end' }); },
   flip: function (t) { if (!t.classList.contains('cover')) t.classList.add('open'); }
 };
+ACT.timer = function (t) { S.draft.timer = parseInt(t.getAttribute('data-v'), 10) || 0; draftChanged(); paintSheet(); };
 ACT.settings = function () { S.sheet = 'settings'; S.nameDraft = null; S.rmConfirm = null; paintSheet(); };
 ACT['name-pick'] = function (t) { setName(t.getAttribute('data-n')); };
 ACT.size = function (t) { S.ui.size = t.getAttribute('data-v'); ls.set(UI_KEY, JSON.stringify(S.ui)); applyUI(); paintSheet(); };

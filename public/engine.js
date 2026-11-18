@@ -14,6 +14,8 @@
 
   var MIN_PLAYERS = 2, MAX_PLAYERS = 20, MAX_WORDS = 12, MAX_CHARS = 140, DEFAULT_WORDS = 4, MAX_NAME = 16;
   var CLAIM_AFTER_MS = 10000; // an away host can be replaced after this long
+  var TIMERS = [0, 30, 60, 120, 180]; // round timer choices in seconds, 0 = off
+  var TIMER_GRACE_MS = 4000;          // late-arriving locks (network lag) still count this long after time is up
   var ADJ = ['Quiet', 'Sneaky', 'Cosmic', 'Velvet', 'Rusty', 'Sunny', 'Nimble', 'Mellow', 'Zesty', 'Frosty',
     'Lucky', 'Dusty', 'Breezy', 'Jolly', 'Cheeky', 'Sleepy', 'Brave', 'Wobbly', 'Golden', 'Mighty'];
   var ANI = ['Otter', 'Falcon', 'Panda', 'Koala', 'Lynx', 'Heron', 'Gecko', 'Walrus', 'Badger', 'Ibis',
@@ -74,8 +76,8 @@
     var room = {
       code: code, hostPid: null, createdAt: now, updatedAt: now,
       phase: 'lobby', round: 0, revealedAt: 0, hidden: false,
-      settings: { words: DEFAULT_WORDS, spicy: false, category: null, answers: 'all' },
-      players: [], order: null, removed: {}
+      settings: { words: DEFAULT_WORDS, spicy: false, category: null, answers: 'all', timer: 0 },
+      timerEnd: 0, players: [], order: null, removed: {}
     };
     addPlayer(room, creatorPid, now, name);
     return room;
@@ -134,7 +136,7 @@
 
   function resetRound(room) {
     room.players.forEach(function (p) { p.locked = false; p.entry = null; });
-    room.order = null; room.hidden = false;
+    room.order = null; room.hidden = false; room.timerEnd = 0;
   }
 
   function act(room, pid, a, now) {
@@ -168,6 +170,7 @@
         if (s.words != null) room.settings.words = clamp(parseInt(s.words, 10) || DEFAULT_WORDS, 1, MAX_WORDS);
         if (s.spicy != null) room.settings.spicy = !!s.spicy;
         if (s.answers != null) room.settings.answers = s.answers === 'host' ? 'host' : 'all';
+        if (s.timer != null) { var tm = parseInt(s.timer, 10); room.settings.timer = TIMERS.indexOf(tm) >= 0 ? tm : 0; }
         if (s.category !== undefined) room.settings.category = cleanCategory(s.category);
         var c = room.settings.category;
         if (c && ((c.pack === 'nsfw' && !room.settings.spicy) || (c.pack === 'pg13' && room.settings.spicy))) room.settings.category = null;
@@ -177,12 +180,14 @@
           resetRound(room);
           room.phase = 'writing';
           room.round++;
+          room.timerEnd = room.settings.timer ? now + room.settings.timer * 1000 : 0;
         }
         break;
       }
       case 'submit': {
         if (room.phase !== 'writing') return err('wrong_phase');
         if (p.locked) return err('already_locked');
+        if (room.timerEnd && now > room.timerEnd + TIMER_GRACE_MS) return err('time_up');
         var text = clean(a.text, MAX_CHARS);
         if (!text) return err('empty');
         if (wordCount(text) > room.settings.words) return err('too_long');
@@ -270,7 +275,8 @@
     var showOrder = room.phase === 'revealed' && !room.hidden && room.order && canSee;
     return {
       code: room.code, phase: room.phase, round: room.round, revealedAt: room.revealedAt, hidden: !!room.hidden,
-      settings: { words: room.settings.words, spicy: room.settings.spicy, category: room.settings.category, answers: room.settings.answers },
+      settings: { words: room.settings.words, spicy: room.settings.spicy, category: room.settings.category, answers: room.settings.answers, timer: room.settings.timer || 0 },
+      timerEnd: room.phase === 'writing' ? (room.timerEnd || 0) : 0, now: now,
       limits: { minPlayers: MIN_PLAYERS, maxPlayers: MAX_PLAYERS, maxWords: MAX_WORDS },
       host: host ? { alias: host.alias, away: !host.connected } : null,
       claimable: claimable(room, pid, now),
@@ -296,7 +302,7 @@
   }
 
   return {
-    MIN_PLAYERS: MIN_PLAYERS, MAX_PLAYERS: MAX_PLAYERS, MAX_WORDS: MAX_WORDS, DEFAULT_WORDS: DEFAULT_WORDS, MAX_NAME: MAX_NAME,
+    MIN_PLAYERS: MIN_PLAYERS, MAX_PLAYERS: MAX_PLAYERS, MAX_WORDS: MAX_WORDS, DEFAULT_WORDS: DEFAULT_WORDS, MAX_NAME: MAX_NAME, TIMERS: TIMERS,
     createRoom: createRoom, addPlayer: addPlayer, takeSeat: takeSeat, setConnected: setConnected, promoteHost: promoteHost,
     act: act, snapshot: snapshot, info: info, find: find, clean: clean, clipName: clipName, cleanCategory: cleanCategory, shuffle: shuffle
   };

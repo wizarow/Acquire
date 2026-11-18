@@ -15,7 +15,7 @@ Three builds from one source (`src/app.html`):
 ## How a game runs (online)
 
 1. Someone starts a room and shares the code or link. Everyone joins.
-2. One player taps **I'll host**. First tap wins; a second claim is refused (`host_taken`). The host picks words (default 4), SFW or NSFW and a category, then starts. **Answers** (Everyone sees / Host only) lives in Settings, the gear on the name pill, until the round starts.
+2. One player taps **I'll host**. First tap wins; a second claim is refused (`host_taken`). The host picks words (default 4), SFW or NSFW and a category, then starts. **Answers** (Everyone sees / Host only) and the **Round timer** live in Settings, the gear on the name pill, until the round starts. Neither is on the start-round page.
 3. Everyone writes and locks one answer. Nobody sees any answer, the host included.
 4. The host reveals. Answers appear shuffled, no names. The host reads them out twice, then taps **Hide all**: answers disappear on every phone (the server stops sending them, not just the UI). **Show all** brings them back.
    - **Host only** mode: only the host's phone gets the answers (other phones show cover cards; the server never sends them). The host reads them out and the room has to remember. The host has just **End round** (no Hide/Show). If the host seat changes hands mid-round, the new host sees the answers and the old one stops seeing them. The setting is chosen in the lobby, is online-only, and is kept for the next round.
@@ -24,7 +24,11 @@ Three builds from one source (`src/app.html`):
 
 **Names.** Everyone starts with a random codename. In the lobby, or in Settings at any time, a player can type their own name (16 characters, a clash gets " 2"). Blank goes back to the random one. The last name and the 5 most recent are kept in that phone's `localStorage` (`acq_name`, `acq_names`) and the last name is applied when joining a room. Nothing about names is stored on the server beyond the room.
 
-**Settings** (gear on the name pill, and top-right on the home screen). For everyone: name, text size (Normal, Large, Larger, Huge) and a colour scheme (Classic, Midnight, Paper, Mint, High contrast), saved per device (`acq_ui`). NSFW rooms always stay plum. For the host: Answers (lobby only) and **Remove a player** (any phase, with a confirm step). A removed player is told, sent home, and that browser tab cannot rejoin the room. If the round is not revealed yet their answer goes with them; after the reveal the cards stay.
+**Round timer.** Off by default. The host picks Off, 30 s, 1 min, 2 min or 3 min in Settings (lobby only, kept for the next round). It starts when the round starts and every phone shows the countdown under the category card (the last 10 seconds turn urgent). At zero, a valid typed answer locks in by itself; anyone without one has missed the round. It does not reveal on its own: the host taps Reveal now (players who did not lock in are left out). The server enforces it: `submit` after the end time plus a 4 s lag grace is refused with `time_up`. The end time is an absolute timestamp in the snapshot (`timerEnd`, with the server's `now` to correct clock drift), so a reload keeps the countdown. Online only.
+
+**Who is pending.** Once you have locked in, the progress area lists the players who have not (their names, dashed and marked "away" if they left the page). Before you lock in you only see the count. Names only, never answers.
+
+**Settings** (gear on the name pill, and top-right on the home screen). For everyone: name, text size (Normal, Large, Larger, Huge) and a colour scheme (Classic, Midnight, Paper, Mint, High contrast), saved per device (`acq_ui`). NSFW rooms always stay plum. For the host: Answers and Round timer (lobby only) and **Remove a player** (any phase, with a confirm step). A removed player is told, sent home, and that browser tab cannot rejoin the room. If the round is not revealed yet their answer goes with them; after the reveal the cards stay.
 
 Local mode is the same game on one phone: set the players, pass the phone, each player types and locks, then reveal / hide / end round.
 
@@ -68,7 +72,7 @@ Online, setup shows the built-in suggestion lists in a fixed order. There is no 
 ## Privacy
 
 - Entries live in room memory only. They are gone when the round ends or the room closes (6h idle, 30 min empty). Local mode keeps them in the page only.
-- Saved forever (online): category name, play count, first/last played, the room code of the last few rooms (to count distinct rooms). Never entries, never codenames.
+- Nothing is saved on the server's disk (online). No categories, counts, entries or codenames outlive the room.
 - The browser keeps a random id in `sessionStorage` (per tab). `localStorage` holds only the last room code and codename. No cookies, no accounts.
 
 ## Files
@@ -85,4 +89,4 @@ Online, setup shows the built-in suggestion lists in a fixed order. There is no 
 
 `POST /api/rooms` and `/join` also accept an optional `name`. The live stream sends `snapshot`, `tick`, `closed` and, to a removed player, `removed`.
 
-Actions: `claim`, `release`, `settings`, `start`, `submit`, `reveal`, `hide`, `show`, `end`, `rename` `{name}`, `kick` `{alias}` (host only), `leave`.
+Actions: `claim`, `release`, `settings` / `start` (`words`, `spicy`, `answers`, `timer` of 0, 30, 60, 120 or 180 seconds, `category`), `submit`, `reveal`, `hide`, `show`, `end`, `rename` `{name}`, `kick` `{alias}` (host only), `leave`.
