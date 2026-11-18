@@ -3,10 +3,8 @@
  * Acquire server. Zero dependencies, Node 18+.
  *   - serves /public
  *   - real-time rooms over Server-Sent Events (SSE) + JSON POSTs
- *   - a small categories "database" that grows every time a category is played
  *
- * Env: PORT (3000), DATA_DIR (./data), TRUST_PROXY=1 behind a proxy/CDN,
- *      MIN_ROOMS (1)  rooms a category must be played in before it is suggested.
+ * Env: PORT (3000), TRUST_PROXY=1 behind a proxy/CDN.
  */
 const http = require('http');
 const fs = require('fs');
@@ -15,76 +13,12 @@ const crypto = require('crypto');
 const Engine = require('./public/engine.js');
 
 const PORT = parseInt(process.env.PORT, 10) || 3000;
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
 const TRUST_PROXY = process.env.TRUST_PROXY === '1';
-const MIN_ROOMS = Math.max(1, parseInt(process.env.MIN_ROOMS, 10) || 1);
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const ROOM_TTL_MS = 6 * 60 * 60 * 1000;
 const EMPTY_TTL_MS = 30 * 60 * 1000;
 const HOST_GRACE_MS = 45 * 1000;
 const CODE_LETTERS = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-const MAX_CATEGORIES = 5000;
-
-/* ------------------------------------------------------------------ */
-/* Categories database. Swap this class for Postgres/SQLite/etc. later: */
-/* keep record(), top() and stats().                                    */
-/* ------------------------------------------------------------------ */
-class CategoryStore {
-  constructor(dir) {
-    this.file = path.join(dir, 'categories.json');
-    this.dir = dir;
-    this.data = { categories: {}, totals: { rooms: 0, rounds: 0, entries: 0 } };
-    this.timer = null;
-    try {
-      fs.mkdirSync(dir, { recursive: true });
-      const raw = fs.readFileSync(this.file, 'utf8');
-      const parsed = JSON.parse(raw);
-      if (parsed && parsed.categories) this.data = parsed;
-    } catch (e) { /* first run or unreadable file: start empty */ }
-  }
-  record(category, spicy, roomCode, entries) {
-    const label = Engine.clean(category.label, 60);
-    if (label.length < 2) return;
-    // SFW and NSFW rooms keep separate tallies, so "Movies" in an 18+ room never hides the SFW one.
-    const sp = !!(spicy || category.pack === 'nsfw');
-    const key = (sp ? 'n:' : 's:') + label.toLowerCase();
-    const d = this.data;
-    let c = d.categories[key];
-    if (!c) {
-      if (Object.keys(d.categories).length >= MAX_CATEGORIES) return;
-      c = d.categories[key] = { label, pack: category.pack, spicy: sp, count: 0, rooms: 0, roomCodes: [], first: Date.now(), last: 0 };
-    }
-    c.count++;
-    c.last = Date.now();
-    if (c.roomCodes.indexOf(roomCode) === -1) { c.rooms++; c.roomCodes = c.roomCodes.concat(roomCode).slice(-5); }
-    d.totals.rounds++;
-    d.totals.entries += entries || 0;
-    this.save();
-  }
-  noteRoom() { this.data.totals.rooms++; this.save(); }
-  top(spicy, limit) {
-    return Object.values(this.data.categories)
-      .filter(c => c.rooms >= MIN_ROOMS && !!c.spicy === !!spicy)
-      .sort((a, b) => b.count - a.count || b.last - a.last)
-      .slice(0, limit)
-      .map(c => ({ label: c.label, count: c.count, spicy: !!c.spicy, pack: c.pack }));
-  }
-  stats() {
-    return { categories: Object.keys(this.data.categories).length, ...this.data.totals };
-  }
-  save() {
-    if (this.timer) return;
-    this.timer = setTimeout(() => { this.timer = null; this.flush(); }, 800);
-  }
-  flush() {
-    try {
-      const tmp = this.file + '.tmp';
-      fs.writeFileSync(tmp, JSON.stringify(this.data));
-      fs.renameSync(tmp, this.file);
-    } catch (e) { console.error('Could not save categories:', e.message); }
-  }
-}
-const store = new CategoryStore(DATA_DIR);
 
 /* ------------------------------------------------------------------ */
 /* Rooms                                                               */
@@ -216,12 +150,7 @@ const server = http.createServer(async (req, res) => {
 
   try {
     if (req.method === 'GET' && p === '/api/health') return json(res, 200, { ok: true, app: 'acquire' });
-    if (req.method === 'GET' && p === '/api/stats') return json(res, 200, { ...store.stats(), liveRooms: rooms.size });
-
-    if (req.method === 'GET' && p === '/api/categories') {
-      const spicy = url.searchParams.get('spicy') === '1';
-      return json(res, 200, { learned: store.top(spicy, 150) });
-    }
+    if (req.method === 'GET' && p === '/api/stats') return json(res, 200, { liveRooms: rooms.size });
 
     if (req.method === 'POST' && p === '/api/rooms') {
       if (limited(ip, 'create', 12, 60000)) return json(res, 429, { error: 'slow_down' });
@@ -229,8 +158,7 @@ const server = http.createServer(async (req, res) => {
       if (!validPid(body.pid)) return json(res, 400, { error: 'bad_pid' });
       const code = newCode();
       if (!code) return json(res, 503, { error: 'busy' });
-      rooms.set(code, Engine.createRoom(code, body.pid, Date.now()));
-      store.noteRoom();
+      rooms.set(code, Engine.createRoom(code, body.pid, Date.now(), typeof body.name === 'string' ? body.name.slice(0, 80) : ''));
       ghostCheck(code, body.pid);
       return json(res, 200, { ok: true, code });
     }
@@ -284,7 +212,8 @@ const server = http.createServer(async (req, res) => {
         if (!room) return json(res, 404, { error: 'no_room' });
         if (kind === 'join') {
           const takeover = typeof body.takeover === 'string' ? body.takeover.slice(0, 40) : '';
-          const r = takeover ? Engine.takeSeat(room, body.pid, takeover, Date.now()) : Engine.addPlayer(room, body.pid, Date.now());
+          const nm = typeof body.name === 'string' ? body.name.slice(0, 80) : '';
+          const r = takeover ? Engine.takeSeat(room, body.pid, takeover, Date.now()) : Engine.addPlayer(room, body.pid, Date.now(), nm);
           if (!r.ok) return json(res, 409, { error: r.error });
           ghostCheck(code, body.pid);
           scheduleHostHandover(room);
@@ -294,7 +223,11 @@ const server = http.createServer(async (req, res) => {
         const r = Engine.act(room, body.pid, body.action, Date.now());
         if (!r.ok) return json(res, 400, { error: r.error, by: r.by || undefined });
         for (const fx of r.effects) {
-          if (fx.type === 'played') store.record(fx.category, fx.spicy, room.code, fx.entries);
+          if (fx.type === 'removed') {
+            // Tell the removed player's open streams, then drop them.
+            const set = clients.get(room.code);
+            if (set) for (const c of [...set]) if (c.pid === fx.pid) { try { send(c.res, 'removed', {}); c.res.end(); } catch (e) { /* closed */ } set.delete(c); }
+          }
         }
         scheduleHostHandover(room);
         broadcast(room);
@@ -309,8 +242,8 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => console.log('Acquire running on http://localhost:' + PORT + '  (data: ' + DATA_DIR + ')'));
+server.listen(PORT, () => console.log('Acquire running on http://localhost:' + PORT));
 
-function shutdown() { store.flush(); process.exit(0); }
+function shutdown() { process.exit(0); }
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);

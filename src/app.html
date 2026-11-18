@@ -87,29 +87,21 @@ button{-webkit-appearance:none;appearance:none}
 
 /* ---------- home ---------- */
 .home .pad{justify-content:space-between}
-.music{min-height:40px;padding:0 14px 0 12px;border-radius:20px;border:3px solid var(--fg);background:transparent;color:var(--fg);display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap}
-.music[aria-pressed="true"]{background:var(--saffron);border-color:var(--saffron);color:var(--ink)}
-.music .eq{display:inline-flex;gap:2px;align-items:flex-end;height:14px}
-.music .eq b{width:3px;background:currentColor;border-radius:2px;height:5px}
-.music[aria-pressed="true"] .eq b{animation:eq .9s ease-in-out infinite}
-.music[aria-pressed="true"] .eq b:nth-child(2){animation-delay:.2s}
-.music[aria-pressed="true"] .eq b:nth-child(3){animation-delay:.4s}
-@keyframes eq{0%,100%{height:4px}50%{height:14px}}
 .wordmark{font-size:min(104px,25vw);line-height:.82;letter-spacing:-.01em}
 .tagline{font-size:27px;line-height:1.15;font-weight:700;max-width:340px}
 .hero{display:flex;flex-direction:column;gap:22px}
 .flips{display:flex;gap:8px;padding:2px 0}
-.flips i{width:36px;height:36px;border-radius:50%;border:3px solid var(--cream);animation:fd 4.2s ease-in-out infinite;animation-delay:calc(var(--i)*.22s)}
+.flips i{width:36px;height:36px;border-radius:50%;border:3px solid var(--fg);animation:fd 4.2s ease-in-out infinite;animation-delay:calc(var(--i)*.22s)}
 @keyframes fd{
-  0%,36%{transform:scaleX(1);background:transparent;border-color:var(--cream)}
-  44%{transform:scaleX(0);background:transparent;border-color:var(--cream)}
+  0%,36%{transform:scaleX(1);background:transparent;border-color:var(--fg)}
+  44%{transform:scaleX(0);background:transparent;border-color:var(--fg)}
   45%{transform:scaleX(0);background:var(--c);border-color:var(--c)}
   53%,86%{transform:scaleX(1);background:var(--c);border-color:var(--c)}
   94%{transform:scaleX(0);background:var(--c);border-color:var(--c)}
-  95%{transform:scaleX(0);background:transparent;border-color:var(--cream)}
-  100%{transform:scaleX(1);background:transparent;border-color:var(--cream)}}
+  95%{transform:scaleX(0);background:transparent;border-color:var(--fg)}
+  100%{transform:scaleX(1);background:transparent;border-color:var(--fg)}}
 .topbtn{min-height:40px;padding:0 16px;border-radius:20px;border:3px solid var(--fg);background:transparent;color:var(--fg);display:inline-flex;align-items:center;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap}
-.btn-block{min-height:92px;border-radius:24px;border:none;background:var(--cream);color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 24px 0 26px;cursor:pointer;width:100%;text-align:left}
+.btn-block{min-height:92px;border-radius:24px;border:none;background:var(--blk,var(--cream));color:var(--blk-fg,var(--ink));display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 24px 0 26px;cursor:pointer;width:100%;text-align:left}
 .btn-block .t{display:flex;flex-direction:column;gap:3px}
 .btn-block .disp{font-size:min(38px,9.5vw);line-height:.95}
 .btn-block small{font-size:14px;font-weight:700}
@@ -118,11 +110,11 @@ button{-webkit-appearance:none;appearance:none}
 .code-in{width:100%;height:96px;border-radius:24px;border:3px solid var(--ink);background:var(--cream);color:var(--ink);text-align:center;font-family:var(--display);font-weight:900;font-size:68px;letter-spacing:.22em;padding-left:.22em;text-transform:uppercase;outline:none}
 .code-in::placeholder{color:#B8AA92}
 .code-in:focus-visible{outline:3px solid var(--cream);outline-offset:3px}
-.err{min-height:22px;font-size:16px;font-weight:800;color:var(--saffron)}
+.err{min-height:22px;font-size:16px;font-weight:800;color:var(--err,var(--saffron))}
 .join-form{display:flex;flex-direction:column;gap:14px}
 .seatlist{display:flex;flex-direction:column;gap:10px}
-.seat{min-height:64px;border-radius:20px;border:3px solid var(--cream);background:transparent;color:var(--cream);font-family:var(--display);font-weight:900;font-size:32px;text-transform:uppercase;cursor:pointer;text-align:left;padding:0 22px}
-.seat:hover{background:var(--cream);color:var(--cobalt)}
+.seat{min-height:64px;border-radius:20px;border:3px solid var(--fg);background:transparent;color:var(--fg);font-family:var(--display);font-weight:900;font-size:32px;text-transform:uppercase;cursor:pointer;text-align:left;padding:0 22px}
+.seat:hover{background:var(--fg);color:var(--bg)}
 
 /* ---------- room: lobby ---------- */
 .setup .pad{gap:16px}
@@ -149,7 +141,7 @@ button{-webkit-appearance:none;appearance:none}
 .tile{min-height:50px;border-radius:14px;border:2.5px solid var(--tile-line,var(--ink));background:var(--tile,var(--cream));color:var(--tile-fg,var(--ink));font-size:15px;font-weight:800;line-height:1.05;padding:4px 8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-align:center}
 .tile:last-child:nth-child(odd){grid-column:1/-1}
 .tile small{font-size:12px;opacity:.7}
-.tile.wild{background:var(--ink);color:var(--saffron);border-color:var(--ink);grid-column:1/-1}
+.tile.wild{background:var(--wild,var(--ink));color:var(--wild-fg,var(--saffron));border-color:var(--wild-line,var(--ink));grid-column:1/-1}
 .spicy .tile.wild{background:transparent;color:var(--cream);border-color:var(--cream)}
 .tile.spice{background:var(--plum);color:var(--pink);border-color:var(--plum)}
 .spicy .tile.spice{background:var(--pink);color:var(--plum);border-color:var(--pink)}
@@ -175,7 +167,7 @@ button{-webkit-appearance:none;appearance:none}
 .field .text-in{height:68px;font-size:22px;border-color:var(--ink)}
 .spicy .field .text-in{border-color:var(--plum)}
 .wc{font-size:15px;font-weight:700}
-.wc.bad{color:#B3001B}
+.wc.bad{color:var(--bad,#B3001B)}
 .spicy .wc.bad{color:var(--plum);text-decoration:underline wavy}
 .locked-box{display:flex;flex-direction:column;gap:8px}
 .locked-box .disp{font-size:min(88px,22vw);line-height:.85}
@@ -193,7 +185,7 @@ button{-webkit-appearance:none;appearance:none}
 .rc.cover{cursor:default}
 .rc .num{flex:none;width:44px;height:44px;border-radius:22px;background:var(--cf);color:var(--c);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:900;font-size:26px}
 .rc .a{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.95;min-width:0;overflow-wrap:anywhere}
-.rc .a.s1{font-size:46px}.rc .a.s2{font-size:38px}.rc .a.s3{font-size:30px}.rc .a.s4{font-size:24px}
+.rc .a.s1{font-size:calc(46px*var(--fs,1))}.rc .a.s2{font-size:calc(38px*var(--fs,1))}.rc .a.s3{font-size:calc(30px*var(--fs,1))}.rc .a.s4{font-size:calc(24px*var(--fs,1))}
 .reveal .head .disp{font-size:min(64px,16vw);line-height:.9}
 .hint{border-radius:18px;background:var(--soft);padding:12px 16px;font-size:16px;font-weight:700;line-height:1.3}
 
@@ -220,13 +212,59 @@ button{-webkit-appearance:none;appearance:none}
 .nofont .btn-main{font-size:min(30px,8vw)}
 .nofont .count{font-size:52px}
 .nofont .code-in{font-size:48px;letter-spacing:.14em}
-.nofont .rc .a.s1{font-size:32px}.nofont .rc .a.s2{font-size:28px}.nofont .rc .a.s3{font-size:24px}.nofont .rc .a.s4{font-size:20px}
+.nofont .rc .a.s1{font-size:calc(32px*var(--fs,1))}.nofont .rc .a.s2{font-size:calc(28px*var(--fs,1))}.nofont .rc .a.s3{font-size:calc(24px*var(--fs,1))}.nofont .rc .a.s4{font-size:calc(20px*var(--fs,1))}
 .nofont .steps h3,.nofont .rb h3,.nofont .sheet h3{font-size:26px}
 .nofont .status-card .disp{font-size:26px}
 .nofont .status-card .big2{font-size:min(38px,10vw)}
 .nofont .seat{font-size:24px}
 .nofont .btn-block .disp{font-size:min(28px,7.5vw)}
 
+//#if online
+/* ---------- online only: text size, colour schemes, settings sheet ---------- */
+html{--fs:1}
+html[data-size=l]{--fs:1.15}
+html[data-size=xl]{--fs:1.3}
+html[data-size=xxl]{--fs:1.5}
+.topbtn.ic{width:40px;padding:0;justify-content:center}
+.mer{display:contents}
+.tag.me.gearbtn{background:transparent;cursor:pointer;min-height:36px;padding:0 10px 0 12px;gap:7px;max-width:44%;min-width:64px;flex:0 .1 auto;font-size:.8125rem}
+.row>.eyebrow{font-size:.9375rem}
+.hint,.caption,.note,.status-card p.t,.locked-box p{overflow-wrap:anywhere}
+.pl{max-width:100%;flex-wrap:wrap;row-gap:0}
+.pn{min-width:0;overflow-wrap:anywhere}
+.gearbtn .nm{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.gearbtn svg{flex:none}
+.ver{position:absolute;left:0;right:0;top:max(3px,env(safe-area-inset-top,0px));text-align:center;font-size:.8125rem;font-weight:700;letter-spacing:.08em;opacity:.55;pointer-events:none}
+.namerow{display:flex;gap:8px;align-items:center}
+.namerow .text-in{height:52px;font-size:18px;flex:1;min-width:0}
+.nchip{min-height:40px;padding:0 14px;border-radius:20px;border:2.5px solid var(--fg);background:transparent;color:var(--fg);font-size:16px;font-weight:800;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.seg.fx button{font-size:.9375rem}
+.themes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.theme{min-height:52px;border-radius:16px;border:3px solid var(--fg);background:transparent;color:var(--fg);display:flex;align-items:center;gap:10px;padding:0 12px;font-size:16px;font-weight:800;cursor:pointer;text-align:left;min-width:0}
+.theme:last-child:nth-child(odd){grid-column:1/-1}
+.theme .sw{flex:none;width:26px;height:26px;border-radius:13px;border:2px solid currentColor;background:linear-gradient(135deg,var(--a) 50%,var(--b) 50%)}
+.sheet .theme[aria-pressed="true"]{background:var(--btn);color:var(--btn-fg);border-color:var(--btn)}
+.rmlist{display:flex;flex-direction:column}
+.rmrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:2px solid rgba(20,17,15,.14);font-size:17px;font-weight:700}
+.sheet.dark .rmrow{border-top-color:rgba(255,244,224,.2)}
+.rmn{min-width:0;overflow-wrap:anywhere}
+.rmn small{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.7}
+.rmb{display:flex;gap:6px;flex:none}
+/* Colour schemes repaint every screen except NSFW rooms (they stay plum) and the how-to page. */
+html[data-theme=midnight] .scr:not(.spicy):not(.fixed){--bg:#14110F;--fg:#FFF4E0;--btn:#FFC21A;--btn-fg:#14110F;--hi:#FFC21A;--focus:#FFF4E0;--off:rgba(255,244,224,.24);--soft:#26211D;--chip:#2EE59D;--chip-fg:#14110F;--chip-line:#2EE59D;--seg:#26211D;--seg-fg:#FFF4E0;--seg-on:#FFC21A;--seg-on-fg:#14110F;--tile:#26211D;--tile-fg:#FFF4E0;--tile-line:#5A4F44;--card:#26211D;--card-fg:#FFF4E0;--card-hi:#FFC21A;--blk:#FFF4E0;--blk-fg:#14110F;--wild:transparent;--wild-fg:#FFC21A;--wild-line:#FFC21A;--err:#FFC21A;--bad:#FF8A8A}
+html[data-theme=paper] .scr:not(.spicy):not(.fixed){--bg:#FFF4E0;--fg:#14110F;--btn:#14110F;--btn-fg:#FFC21A;--hi:#14110F;--focus:#14110F;--off:rgba(20,17,15,.2);--soft:rgba(20,17,15,.08);--chip:#2EE59D;--chip-fg:#14110F;--chip-line:#14110F;--seg:#14110F;--seg-fg:#FFF4E0;--seg-on:#FFC21A;--seg-on-fg:#14110F;--tile:#FFFFFF;--tile-fg:#14110F;--tile-line:#14110F;--card:#14110F;--card-fg:#FFF4E0;--card-hi:#FFC21A;--blk:#14110F;--blk-fg:#FFF4E0;--wild:#14110F;--wild-fg:#FFC21A;--wild-line:#14110F;--err:#B3001B;--bad:#B3001B}
+html[data-theme=mint] .scr:not(.spicy):not(.fixed){--bg:#2EE59D;--fg:#14110F;--btn:#14110F;--btn-fg:#2EE59D;--hi:#14110F;--focus:#14110F;--off:rgba(20,17,15,.2);--soft:rgba(20,17,15,.1);--chip:#FFF4E0;--chip-fg:#14110F;--chip-line:#14110F;--seg:#14110F;--seg-fg:#FFF4E0;--seg-on:#2EE59D;--seg-on-fg:#14110F;--tile:#FFF4E0;--tile-fg:#14110F;--tile-line:#14110F;--card:#14110F;--card-fg:#FFF4E0;--card-hi:#2EE59D;--blk:#14110F;--blk-fg:#2EE59D;--wild:#14110F;--wild-fg:#2EE59D;--wild-line:#14110F;--err:#B3001B;--bad:#B3001B}
+html[data-theme=contrast] .scr:not(.spicy):not(.fixed){--bg:#000000;--fg:#FFFFFF;--btn:#FFE600;--btn-fg:#000000;--hi:#FFE600;--focus:#FFE600;--off:rgba(255,255,255,.4);--soft:#1A1A1A;--chip:#FFFFFF;--chip-fg:#000000;--chip-line:#FFFFFF;--seg:#1A1A1A;--seg-fg:#FFFFFF;--seg-on:#FFE600;--seg-on-fg:#000000;--tile:#000000;--tile-fg:#FFFFFF;--tile-line:#FFFFFF;--card:#1A1A1A;--card-fg:#FFFFFF;--card-hi:#FFE600;--blk:#FFFFFF;--blk-fg:#000000;--wild:transparent;--wild-fg:#FFE600;--wild-line:#FFE600;--err:#FFE600;--bad:#FF8A8A}
+//#endif
+
+//#if demo
+#demobar{position:sticky;top:0;z-index:50;background:#14110F;color:#FFF4E0;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 12px;font:700 12px/1.25 var(--body);border-bottom:2px solid #FFC21A}
+.dbt{background:#FFC21A;color:#14110F;border-radius:6px;padding:2px 7px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.dbs{opacity:.8}
+.dbc{border:2px solid #FFF4E0;background:transparent;color:inherit;border-radius:14px;padding:4px 10px;font:inherit;cursor:pointer}
+.dbc.on{background:#FFC21A;color:#14110F;border-color:#FFC21A}
+.dba{display:flex;align-items:center;gap:6px;opacity:.9;margin-left:auto}
+//#endif
 /* ---------- overlays ---------- */
 .scrim{position:fixed;inset:0;background:rgba(20,17,15,.62);z-index:20;display:flex;align-items:flex-end;justify-content:center}
 .sheet{width:100%;max-width:480px;max-height:calc(100% - 60px);overflow-y:auto;border-radius:32px 32px 0 0;background:var(--cream);color:var(--ink);padding:12px var(--gut-r) calc(26px + env(safe-area-inset-bottom,0px)) var(--gut-l);display:flex;flex-direction:column;gap:14px;--btn:var(--ink);--btn-fg:var(--saffron);--fg:var(--ink);--hi:var(--ink);--focus:var(--ink)}
@@ -241,6 +279,9 @@ button{-webkit-appearance:none;appearance:none}
 </style>
 </head>
 <body>
+//#if demo
+<div id="demobar"></div>
+//#endif
 <div id="app">
   <div id="view"></div>
   <div id="sheet"></div>
@@ -257,6 +298,11 @@ var E = window.AcquireEngine;
 var LOCAL = true;
 //#else
 var LOCAL = false;
+//#endif
+//#if demo
+var DEMO = true;
+//#else
+var DEMO = false;
 //#endif
 var $ = function (s, r) { return (r || document).querySelector(s); };
 var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
@@ -322,6 +368,7 @@ var I = {
   eyeoff: '<svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M3 16s5-9 13-9 13 9 13 9-5 9-13 9S3 16 3 16z" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round"/><circle cx="16" cy="16" r="4" stroke="currentColor" stroke-width="3.2"/><path d="M5 27L27 5" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>',
   eye: '<svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M3 16s5-9 13-9 13 9 13 9-5 9-13 9S3 16 3 16z" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round"/><circle cx="16" cy="16" r="4" stroke="currentColor" stroke-width="3.2"/></svg>',
   copy: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><rect x="6" y="6" width="10" height="10" rx="2.5" stroke="currentColor" stroke-width="2.4"/><path d="M12 3.5A1.5 1.5 0 0010.5 2H4.5A2.5 2.5 0 002 4.5v6A1.5 1.5 0 003.5 12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
+  gear: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
   share: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 11V2M5.5 5.5L9 2l3.5 3.5M3 9v5.5A1.5 1.5 0 004.5 16h9a1.5 1.5 0 001.5-1.5V9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 };
 
@@ -332,7 +379,8 @@ var ERR = {
   need_category: 'Pick a category first.', wrong_phase: 'The round already moved on.', empty: 'Write something first.', too_long: 'Too many words.',
   nobody_locked: 'Nobody has locked in yet.', not_in_room: 'You are not in that room.', already_locked: 'Already locked in.',
   host_taken: 'Someone is already hosting.', seat_taken: 'That codename is already back in.', no_seat: 'That codename is gone.',
-  busy: 'Servers are busy. Try again.', too_large: 'That was too big.', bad_json: 'Something went wrong.'
+  busy: 'Servers are busy. Try again.', too_large: 'That was too big.', bad_json: 'Something went wrong.',
+  removed: 'The host removed you from that room.', no_player: 'That player is already gone.', cant_remove_self: 'You cannot remove yourself.'
 };
 function errMsg(e) {
   if (e && e.code === 'host_taken') return (e.by ? e.by : 'Someone') + ' is already hosting.';
@@ -356,16 +404,17 @@ var START_LABEL = LOCAL ? 'Start a game' : 'Start a room';
 
 /* ---------- state ---------- */
 var S = {
-  screen: 'home', mode: LOCAL ? 'local' : 'live', code: null, snap: null, net: 'ok', key: '',
+  screen: 'home', mode: LOCAL ? 'local' : (DEMO ? 'demo' : 'live'), code: null, snap: null, net: 'ok', key: '',
   joinCode: '', joinErr: '', joining: false, locking: false, seats: null, seatsCode: null,
-  draft: { words: 4, spicy: false, mode: 'rec', category: null, custom: '' },
-  learned: [], lmap: {}, expanded: {}, sheet: null, music: false,
-  cm: 'open', flipNext: false, confettiNext: false, animateReveal: false, cardsCache: '', closeT: null
+  draft: { words: 4, spicy: false, answers: 'all', mode: 'rec', category: null, custom: '' },
+  learned: [], lmap: {}, expanded: {}, sheet: null,
+  cm: 'open', flipNext: false, confettiNext: false, animateReveal: false, cardsCache: '', closeT: null,
+  ui: { size: 'm', theme: 'classic' }, nameDraft: null, rmConfirm: null
 };
 var view = $('#view');
 var unsub = null, flipTimers = [], pushTimer = null, toastTimer = null, sheetHtml = null, lastEvt = Date.now();
 
-//#if online
+//#if live
 /* ---------- transports ---------- */
 function api(path, method, body) {
   return fetch(path, {
@@ -381,16 +430,16 @@ function api(path, method, body) {
 }
 
 var Live = {
-  create: function () { return api('/api/rooms', 'POST', { pid: pid }); },
+  create: function (name) { return api('/api/rooms', 'POST', { pid: pid, name: name || undefined }); },
   info: function (code) { return api('/api/rooms/' + code + '/info?pid=' + encodeURIComponent(pid)); },
-  join: function (code, takeover) { return api('/api/rooms/' + code + '/join', 'POST', { pid: pid, takeover: takeover || undefined }); },
+  join: function (code, takeover, name) { return api('/api/rooms/' + code + '/join', 'POST', { pid: pid, takeover: takeover || undefined, name: name || undefined }); },
   act: function (code, action) { return api('/api/rooms/' + code + '/act', 'POST', { pid: pid, action: action }); },
-  categories: function (spicy) { return api('/api/categories?spicy=' + (spicy ? 1 : 0)).then(function (r) { return r.learned || []; }); },
   subscribe: function (code, onSnap, onNet, onGone) {
     var es = new EventSource('/api/rooms/' + code + '/events?pid=' + encodeURIComponent(pid));
     es.addEventListener('snapshot', function (e) { lastEvt = Date.now(); try { onSnap(JSON.parse(e.data)); } catch (x) {} });
     es.addEventListener('tick', function () { lastEvt = Date.now(); });
     es.addEventListener('closed', function () { es.close(); onGone(); });
+    es.addEventListener('removed', function () { es.close(); onGone('removed'); });
     es.onopen = function () { lastEvt = Date.now(); onNet('ok'); };
     es.onerror = function () { if (es.readyState === 2) { es.close(); onGone(); } else onNet('reconnecting'); };
     return function () { es.close(); };
@@ -458,83 +507,82 @@ var Local = (function () {
   };
 })();
 //#endif
-//#if online
+//#if demo
+/* ---------- Demo: the online screens on an in-page room. The bar at the top switches between players' phones. ---------- */
+var Demo = (function () {
+  var CODE = 'DEMO', room = null, L = null, viewPid = 'you', auto = true;
+  var ONE = ['Pizza', 'Jaws', 'Paris', 'Mango', 'Batman', 'Sushi', 'Tennis', 'Oreo', 'Mumbai', 'Zebra', 'Inception', 'Pikachu', 'Nutella', 'Sherlock'];
+  var TWO = ['Taylor Swift', 'Top Gun', 'Ice Cream', 'Iron Man', 'Eiffel Tower', 'Butter Chicken', 'Harry Potter', 'Cold Coffee', 'Big Mac', 'Lion King'];
+  function now() { return Date.now(); }
+  function notify() { if (L && room) L.onSnap(E.snapshot(room, viewPid, now())); }
+  function item() {
+    var used = room.players.map(function (p) { return p.entry; }), pool = (room.settings.words >= 2 ? ONE.concat(TWO) : ONE).filter(function (x) { return used.indexOf(x) < 0; });
+    return pool.length ? pool[Math.floor(Math.random() * pool.length)] : 'Wildcard';
+  }
+  function botsPlay() {
+    var r = room.round;
+    room.players.filter(function (p) { return /^bot/.test(p.pid); }).forEach(function (p, i) {
+      setTimeout(function () {
+        if (!room || !auto || room.phase !== 'writing' || room.round !== r) return;
+        var q = E.find(room, p.pid); if (!q || q.locked || q.pid === viewPid) return;
+        E.act(room, q.pid, { type: 'submit', text: item() }, now()); notify();
+      }, 1300 + i * 1200 + Math.random() * 800);
+    });
+  }
+  return {
+    create: function (name) {
+      room = E.createRoom(CODE, 'you', now(), name);
+      for (var i = 1; i <= 3; i++) E.addPlayer(room, 'bot' + i, now());
+      viewPid = 'you';
+      return Promise.resolve({ ok: true, code: CODE });
+    },
+    info: function (code) { return room && code === CODE ? Promise.resolve(E.info(room, 'you')) : Promise.reject({ code: 'no_room' }); },
+    join: function (code, takeover, name) {
+      if (!room || code !== CODE) return Promise.reject({ code: 'no_room' });
+      var r = takeover ? E.takeSeat(room, 'you', takeover, now()) : E.addPlayer(room, 'you', now(), name);
+      if (!r.ok) return Promise.reject({ code: r.error });
+      viewPid = 'you'; return Promise.resolve({ ok: true, code: CODE });
+    },
+    act: function (code, a) {
+      if (!room) return Promise.reject({ code: 'no_room' });
+      var r = E.act(room, viewPid, a, now());
+      if (!r.ok) return Promise.reject({ code: r.error, by: r.by });
+      if (a.type === 'leave') viewPid = 'you';
+      if (a.type === 'start') botsPlay();
+      notify();
+      return Promise.resolve({ ok: true });
+    },
+    subscribe: function (code, onSnap) { L = { onSnap: onSnap }; setTimeout(notify, 0); return function () { L = null; }; },
+    players: function () { return room ? room.players.map(function (p) { return { pid: p.pid, alias: p.alias, host: p.pid === room.hostPid }; }) : []; },
+    view: function () { return viewPid; },
+    auto: function (v) { if (v === undefined) return auto; auto = !!v; },
+    switchTo: function (pid) { if (room && E.find(room, pid)) { viewPid = pid; notify(); } }
+  };
+})();
+function paintBar() {
+  var el = $('#demobar'); if (!el) return;
+  var h = '<span class="dbt">Demo</span>';
+  if (!S.code) h += '<span class="dbs">Simulated in this page. Tap Start a room: three friends join, and you can look through each phone.</span>';
+  else h += '<span class="dbs">Viewing as</span>' + Demo.players().map(function (p) {
+    return '<button type="button" class="dbc' + (p.pid === Demo.view() ? ' on' : '') + '" data-dpid="' + p.pid + '">' + esc(p.alias) + (p.host ? ' ★' : '') + '</button>';
+  }).join('') + '<label class="dba"><input type="checkbox" id="dbauto"' + (Demo.auto() ? ' checked' : '') + '> Friends write on their own</label>';
+  if (el._h !== h) { el.innerHTML = h; el._h = h; }
+}
+function demoSwitch(pid) {
+  S.sheet = null; S.nameDraft = null; S.rmConfirm = null; S.locking = false; S.key = '';
+  Demo.switchTo(pid);
+}
+//#endif
+//#if live
 var T = Live;
-//#else
+//#endif
+//#if demo
+var T = Demo;
+//#endif
+//#if local
 var T = Local;
 //#endif
 var modeReady = Promise.resolve(S.mode);
-
-/* ---------- music: front page only, starts on tap ---------- */
-var Music = (function () {
-  var ctx = null, master, bus, delayIn, timer = null, running = false;
-  var BPM = 78, eighth = 60 / BPM / 2, step = 0, nextT = 0, pi = 2;
-  var chords = [[57, 60, 64], [53, 57, 60], [55, 59, 62], [52, 55, 59]];
-  var penta = [69, 72, 74, 76, 79, 81, 84];
-  function f(m) { return 440 * Math.pow(2, (m - 69) / 12); }
-  function init() {
-    if (ctx) return true;
-    var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
-    try { ctx = new AC(); } catch (e) { ctx = null; return false; }
-    master = ctx.createGain(); master.gain.value = 0.0001; master.connect(ctx.destination);
-    bus = ctx.createGain(); bus.connect(master);
-    delayIn = ctx.createGain(); delayIn.gain.value = 0.6;
-    var d = ctx.createDelay(1); d.delayTime.value = eighth * 1.5;
-    var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2400;
-    var fb = ctx.createGain(); fb.gain.value = 0.36;
-    var wet = ctx.createGain(); wet.gain.value = 0.55;
-    delayIn.connect(d); d.connect(lp); lp.connect(fb); fb.connect(d); lp.connect(wet); wet.connect(bus);
-    return true;
-  }
-  function pad(ch, t, dur) {
-    ch.forEach(function (m, i) {
-      var o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = f(m); o.detune.value = (i - 1) * 6;
-      var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 820;
-      var g = ctx.createGain();
-      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.05, t + 1.6);
-      g.gain.setValueAtTime(0.05, t + dur - 0.4); g.gain.linearRampToValueAtTime(0.0001, t + dur + 1.4);
-      o.connect(lp); lp.connect(g); g.connect(bus); o.start(t); o.stop(t + dur + 1.5);
-    });
-  }
-  function bass(m, t) {
-    var o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f(m);
-    var g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.11, t + 0.05); g.gain.exponentialRampToValueAtTime(0.0001, t + 3.2);
-    o.connect(g); g.connect(bus); o.start(t); o.stop(t + 3.3);
-  }
-  function pluck(m, t, v) {
-    var o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = f(m);
-    var g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.7);
-    o.connect(g); g.connect(bus); g.connect(delayIn); o.start(t); o.stop(t + 0.75);
-  }
-  function sched(t) {
-    var pos = step % 16;
-    if (pos === 0) { var ch = chords[Math.floor(step / 16) % chords.length]; pad(ch, t, eighth * 16); bass(ch[0] - 12, t); }
-    if (Math.random() < 0.62) {
-      pi = Math.min(penta.length - 1, Math.max(0, pi + (Math.random() < 0.5 ? -1 : 1) * (1 + (Math.random() < 0.3 ? 1 : 0))));
-      pluck(penta[pi], t, pos % 4 === 0 ? 0.075 : 0.05);
-    }
-  }
-  function tick() { if (!ctx) return; while (nextT < ctx.currentTime + 0.35) { sched(nextT); nextT += eighth; step++; } }
-  function start() {
-    if (!init()) return false;
-    try { ctx.resume(); } catch (e) {}
-    if (!timer) { nextT = ctx.currentTime + 0.12; step = 0; timer = setInterval(tick, 90); }
-    var t = ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(Math.max(master.gain.value, 0.0001), t); master.gain.linearRampToValueAtTime(0.5, t + 2.2);
-    running = true; return true;
-  }
-  function stop() {
-    if (!ctx || !running) return;
-    running = false;
-    var t = ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(Math.max(master.gain.value, 0.0001), t); master.gain.linearRampToValueAtTime(0.0001, t + 0.35);
-    setTimeout(function () { if (!running && timer) { clearInterval(timer); timer = null; } }, 600);
-  }
-  document.addEventListener('visibilitychange', function () {
-    if (!ctx) return;
-    try { if (document.hidden) ctx.suspend(); else if (running) ctx.resume(); } catch (e) {}
-  });
-  return { start: start, stop: stop };
-})();
-function stopMusic() { if (S.music) { S.music = false; Music.stop(); } }
 
 /* ---------- confetti (first reveal only, skipped for reduced motion) ---------- */
 function confetti() {
@@ -590,10 +638,106 @@ function setLearned(list) {
   S.learned.forEach(function (c) { S.lmap[c.label.toLowerCase()] = c.count; });
 }
 function communityItems() {
+  if (!LOCAL) return []; // online: no Community picks section, only the built-in lists (still ranked by plays)
   return S.learned.filter(function (c) { return !SEED[c.label.toLowerCase()] && !!c.spicy === !!S.draft.spicy; })
     .map(function (c, i) { return { l: c.label, n: c.count, i: i, pack: c.pack === 'nsfw' ? 'nsfw' : 'custom' }; });
 }
 function hostName() { return S.snap && S.snap.host ? S.snap.host.alias : 'Someone'; }
+// Cards are covered when the host hid them, or when this phone is not allowed to see them (host-only mode).
+function isCovered(s) { return !!s && (!!s.hidden || !(s.me && s.me.canSee)); }
+function answersSection() {
+  if (LOCAL) return '';
+  var host = S.draft.answers === 'host';
+  return '<section class="sec"><h2>Answers</h2><div class="seg" role="group" aria-label="Who sees the answers"><button type="button" data-act="answers" data-v="all" aria-pressed="' + !host + '">Everyone sees</button><button type="button" data-act="answers" data-v="host" aria-pressed="' + host + '">Host only</button></div>' +
+    '<p class="note">' + (host ? 'Only you see the answers. Read them out loud. Phones show covers.' : 'Answers show on every phone after the reveal.') + '</p></section>';
+}
+
+//#if online
+/* ---------- names, display preferences, settings sheet (online only) ---------- */
+var NAME_KEY = 'acq_name', RECENT_KEY = 'acq_names', UI_KEY = 'acq_ui';
+var SIZES = [['m', 'Normal'], ['l', 'Large'], ['xl', 'Larger'], ['xxl', 'Huge']];
+var THEMES = {
+  classic: { n: 'Classic', a: '#2B2FE0', b: '#FFC21A' },
+  midnight: { n: 'Midnight', a: '#14110F', b: '#FFC21A', bg: '#14110F' },
+  paper: { n: 'Paper', a: '#FFF4E0', b: '#14110F', bg: '#FFF4E0' },
+  mint: { n: 'Mint', a: '#2EE59D', b: '#14110F', bg: '#2EE59D' },
+  contrast: { n: 'High contrast', a: '#000000', b: '#FFE600', bg: '#000000' }
+};
+function savedName() { return E.clipName(ls.get(NAME_KEY) || ''); }
+function recentNames() {
+  try { var a = JSON.parse(ls.get(RECENT_KEY) || '[]'); return Array.isArray(a) ? a.filter(function (x) { return typeof x === 'string' && x; }).slice(0, 5) : []; } catch (e) { return []; }
+}
+function rememberName(n) {
+  n = E.clipName(n);
+  if (!n) { ls.del(NAME_KEY); return; }
+  ls.set(NAME_KEY, n);
+  var k = n.toLowerCase(), a = recentNames().filter(function (x) { return x.toLowerCase() !== k; });
+  a.unshift(n); ls.set(RECENT_KEY, JSON.stringify(a.slice(0, 5)));
+}
+function loadUI() {
+  try {
+    var u = JSON.parse(ls.get(UI_KEY) || '{}') || {};
+    if (SIZES.some(function (z) { return z[0] === u.size; })) S.ui.size = u.size;
+    if (THEMES[u.theme]) S.ui.theme = u.theme;
+  } catch (e) {}
+}
+function applyUI() {
+  var h = document.documentElement;
+  h.setAttribute('data-size', S.ui.size); h.setAttribute('data-theme', S.ui.theme);
+  h.style.setProperty('--page', pageColour());
+}
+function nameValue() { var m = S.snap && S.snap.me; return S.nameDraft != null ? S.nameDraft : (m && m.custom ? m.alias : ''); }
+function nameSection(where) {
+  var s = S.snap, m = s && s.me; if (!m) return '';
+  var cur = m.alias.toLowerCase(), taken = {};
+  s.players.forEach(function (p) { if (!p.isMe) taken[p.alias.toLowerCase()] = 1; });
+  var chips = recentNames().filter(function (n) { var k = n.toLowerCase(); return k !== cur && !taken[k]; })
+    .map(function (n) { return '<button type="button" class="nchip" data-act="name-pick" data-n="' + esc(n) + '">' + esc(n) + '</button>'; }).join('');
+  return '<section class="sec"><h2>Your name</h2><form class="namerow" data-form="name" autocomplete="off"><input class="text-in" id="uname-' + where + '" maxlength="16" placeholder="' + esc(m.base) + '" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Your username"><button type="submit" class="mini">Set</button></form>' +
+    '<p class="note">' + (m.custom ? 'Clear it and tap Set to go back to ' + esc(m.base) + '.' : 'Leave it blank to keep a random name.') + '</p>' +
+    (chips ? '<p class="sub">Recent</p><div class="chips">' + chips + '</div>' : '') + '</section>';
+}
+function sizeSection() {
+  return '<section class="sec"><h2>Text size</h2><div class="seg fx" role="group" aria-label="Text size">' + SIZES.map(function (z) {
+    return '<button type="button" data-act="size" data-v="' + z[0] + '" aria-pressed="' + (S.ui.size === z[0]) + '">' + z[1] + '</button>';
+  }).join('') + '</div></section>';
+}
+function themeSection() {
+  return '<section class="sec"><h2>Colour scheme</h2><div class="themes" role="group" aria-label="Colour scheme">' + Object.keys(THEMES).map(function (k) {
+    var t = THEMES[k];
+    return '<button type="button" class="theme" data-act="theme" data-v="' + k + '" aria-pressed="' + (S.ui.theme === k) + '"><span class="sw" style="--a:' + t.a + ';--b:' + t.b + '"></span>' + t.n + '</button>';
+  }).join('') + '</div><p class="note">NSFW rooms always stay plum.</p></section>';
+}
+function removeSection() {
+  var s = S.snap, others = s.players.filter(function (p) { return !p.isMe; });
+  if (!others.length) return '<section class="sec"><h2>Remove a player</h2><p class="note">Nobody else is in the room yet.</p></section>';
+  var rows = others.map(function (p) {
+    var a = esc(p.alias), conf = S.rmConfirm === p.alias;
+    return '<li class="rmrow"><span class="rmn">' + a + (p.connected ? '' : ' <small>away</small>') + '</span>' + (conf
+      ? '<span class="rmb"><button type="button" class="mini" data-act="rm-yes" data-a="' + a + '">Remove</button><button type="button" class="mini line" data-act="rm-no">Keep</button></span>'
+      : '<button type="button" class="mini line" data-act="rm" data-a="' + a + '">Remove</button>') + '</li>';
+  }).join('');
+  return '<section class="sec"><h2>Remove a player</h2><ul class="rmlist">' + rows + '</ul></section>';
+}
+function settingsSheetHTML() {
+  var s = S.snap, inRoom = !!(S.code && s && s.me);
+  var h = '<div class="scrim" data-act="close-bg"><div class="sheet' + (spicyNow() ? ' dark' : '') + '" role="dialog" aria-modal="true" aria-label="Settings" tabindex="-1"><span class="grab"></span><h3 class="disp">Settings</h3>';
+  if (inRoom) h += nameSection('sheet');
+  h += sizeSection() + themeSection();
+  if (inRoom && s.me.isHost) {
+    if (s.phase === 'lobby') h += answersSection();
+    h += removeSection();
+  }
+  return h + '<button type="button" class="btn-main" data-act="close">Done</button></div></div>';
+}
+function setName(raw) {
+  if (!S.code || !S.snap) return;
+  var v = E.clipName(raw);
+  T.act(S.code, { type: 'rename', name: v }).then(function () { S.nameDraft = null; rememberName(v); patchRegions('uname'); paintSheet(); }).catch(function (e) { toast(errMsg(e)); });
+}
+//#else
+var savedName = function () { return ''; };
+//#endif
 
 /* ---------- views ---------- */
 function palClass() {
@@ -609,6 +753,7 @@ function palClass() {
 }
 function pageColour() {
   var p = palClass();
+  if (!LOCAL && S.ui.theme !== 'classic' && p.indexOf('spicy') < 0 && S.key !== 'how' && THEMES[S.ui.theme]) return THEMES[S.ui.theme].bg;
   if (p.indexOf('spicy') >= 0) return p.indexOf('pal-green') >= 0 ? '#FF2E88' : '#1A0712';
   return { 'pal-blue': '#2B2FE0', 'pal-yellow': '#FFC21A', 'pal-green': '#2EE59D', 'pal-dark': '#14110F', 'pal-paper': '#FFF4E0' }[p.split(' ')[0]];
 }
@@ -626,26 +771,32 @@ function topRow(left, mid, right) { return '<div class="row">' + left + '<p clas
 var BACK = '<button class="circle" data-act="back" aria-label="Back">' + I.back + '</button>';
 var SPACER = '<span class="circle sp"></span>';
 var LEAVE = '<button class="circle" data-act="leave" aria-label="Leave room">' + I.x + '</button>';
-function meTag() { return !LOCAL && S.snap && S.snap.me ? '<span class="tag me" aria-label="You are ' + esc(S.snap.me.alias) + '">' + esc(S.snap.me.alias) + '</span>' : SPACER; }
+// The name pill is a region so it follows renames. It also opens Settings.
+function meTag() { return LOCAL ? SPACER : '<span class="mer" data-r="me"></span>'; }
+function mePill() {
+  if (LOCAL || !S.snap || !S.snap.me) return '';
+  var n = esc(S.snap.me.alias);
+  return '<button type="button" class="tag me gearbtn" data-act="settings" aria-label="Settings. You are ' + n + '"><span class="nm">' + n + '</span>' + I.gear + '</button>';
+}
 
 function homeView() {
   var dots = ['var(--saffron)', 'var(--mint)', 'var(--tomato)', 'var(--cream)', 'var(--pink)', 'var(--saffron)'].map(function (c, i) { return '<i style="--c:' + c + ';--i:' + i + '"></i>'; }).join('');
   var main = '<button class="btn-main" data-act="start">' + START_LABEL + ' ' + I.arrow + '</button>' +
     (LOCAL ? '' : '<button class="btn-ghost" data-act="join">Join a room</button><div data-r="rejoin"></div>');
   return '<main class="scr home pal-blue"><div class="pad">' +
-    '<div class="row"><button type="button" class="topbtn" data-act="rules">Rulebook</button><span data-r="music"></span></div>' +
+    '<div class="row"><button type="button" class="topbtn" data-act="rules">Rulebook</button>' + (LOCAL ? '' : '<button type="button" class="topbtn ic" data-act="settings" aria-label="Settings">' + I.gear + '</button>') + '</div>' +
     '<div class="hero"><h1 class="disp wordmark">Acquire</h1><div class="flips" aria-hidden="true">' + dots + '</div>' +
     '<p class="tagline">Hidden items.<br>Anonymous writers.<br>Catch them all.</p></div>' +
     '<div class="stack">' + main +
     '<button type="button" class="btn-block" data-act="how"><span class="t"><span class="disp">How to play</span><small>' + NUM[HOW.length] + ' steps · 1 minute</small></span>' + I.arrow + '</button>' +
-    '<p class="caption">' + (LOCAL ? 'One phone, passed around. No sign-up. Nothing leaves this phone.' : 'No sign-up. You are anonymous: everyone gets a random codename.') + '</p></div></div></main>';
+    '<p class="caption">' + (LOCAL ? 'One phone, passed around. No sign-up. Nothing leaves this phone.' : 'No sign-up. You are anonymous: everyone gets a random codename.') + '</p></div></div>' + (LOCAL ? '' : '<p class="ver">v2 · Ishan Atul’s Render</p>') + '</main>';
 }
 function joinView() {
   return '<main class="scr home pal-blue"><div class="pad">' + topRow(BACK, 'Join a room', SPACER) +
     '<div class="stack"><h2 class="disp big">Enter the<br>room code</h2><p class="tagline" style="font-size:20px">Four letters. They are on the screen of whoever started the room, or just open the link they sent you.</p></div>' +
     '<form class="join-form" data-form="join" autocomplete="off"><input class="code-in" id="code" inputmode="text" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="4" placeholder="ABCD" aria-label="Room code" value="' + esc(S.joinCode) + '">' +
     '<p class="err" role="alert" data-r="joinerr"></p><div data-r="joinbtn"></div></form>' +
-    '<p class="caption">You will be given a random codename. Nobody sees your real name.</p></div></main>';
+    '<p class="caption">You get a random codename. You can swap it for your own name once you are in.</p></div></main>';
 }
 function seatsView() {
   var seats = (S.seats || []).map(function (s) { return '<button type="button" class="seat" data-act="seat" data-alias="' + esc(s.alias) + '">' + esc(s.alias) + '</button>'; }).join('');
@@ -655,7 +806,7 @@ function seatsView() {
 }
 function howView() {
   var li = HOW.map(function (h, i) { return '<li style="--band:' + h[2] + '"><span class="num">' + (i + 1) + '</span><div><h3 class="disp">' + h[0] + '</h3><p>' + esc(h[1]) + '</p></div></li>'; }).join('');
-  return '<main class="scr pal-dark"><div class="pad">' + topRow(BACK, 'How to play', SPACER) +
+  return '<main class="scr pal-dark fixed"><div class="pad">' + topRow(BACK, 'How to play', SPACER) +
     '<h2 class="disp big">' + NUM[HOW.length] + ' steps.<br><span style="color:var(--saffron)">' + (LOCAL ? 'One phone.' : 'No sign-up.') + '</span></h2><ol class="steps">' + li + '</ol>' +
     '<div class="stack"><button class="btn-main" data-act="start">' + START_LABEL + ' ' + I.arrow + '</button><button class="btn-ghost" data-act="rules">Read the rulebook</button></div></div></main>';
 }
@@ -664,6 +815,14 @@ function rulesView() {
   var acquire = sec('Acquiring', '<ul><li>' + (LOCAL ? 'Whoever starts' : 'The host') + ' asks a player: “Did you write [item]?”</li><li>Yes: that player is acquired.</li><li>No: that player now asks someone else about a different item.</li><li>The same item can’t be asked about twice.</li></ul>');
   var words = sec('Words per answer', '<p>The cap is 1 to 12 words. The default is 4. An answer needs at least one word and no more than the cap.</p>');
   var nsfw = sec('SFW and NSFW', '<p>NSFW switches the suggestions to adult prompts and turns the screen plum' + (LOCAL ? '' : ' for everyone') + '. Only switch it on if everyone playing is 18 or over and up for it.</p>');
+//#if online
+  var shide = sec('Showing and hiding answers', '<ul><li>The host reveals the answers, reads them out twice, then taps Hide all. They vanish on every phone. Show all brings them back.</li><li>Before the round starts the host can pick who sees the answers, in Settings (the gear next to your name). Everyone sees: the answers show on every phone. Host only: only the host’s phone shows them. Everyone else sees covers, so listen and remember.</li><li>In Host only mode the host has just End round, since there is nothing to hide.</li></ul>');
+  var yourname = sec('Your name', '<ul><li>You start with a random codename. Open Settings (the gear next to your name) to type your own name instead. Up to 16 characters.</li><li>Leave it blank to keep the random one. If someone already has your name, a 2 is added.</li><li>Your recent names are saved on your own phone, so you can tap one next time.</li><li>Names never appear next to answers.</li></ul>');
+  var removing = sec('Removing a player', '<ul><li>The host can remove a player: Settings, then Remove next to their name. Good for someone who has dropped off or is not playing.</li><li>The player is told they were removed and cannot rejoin from that tab.</li><li>If answers are not revealed yet, a removed player’s answer goes with them. If they are, the cards stay as they are.</li></ul>');
+  var looks = sec('Text size and colours', '<p>Settings also has a text size and a few colour schemes. They are saved on your own phone and do not affect anyone else. NSFW rooms always stay plum.</p>');
+//#else
+  var shide = '', yourname = '', removing = '', looks = '';
+//#endif
   var writing = sec('Writing', '<p>Type your answer and lock it in. You cannot change it after that. Nobody sees any answer until the reveal.</p>');
   var body;
   if (LOCAL) {
@@ -674,11 +833,11 @@ function rulesView() {
       sec('Privacy', '<p>Answers live in this page only and vanish when the round ends. The only thing saved on this phone is the name of each category you play, to rank the suggestions.</p>');
   } else {
     body = sec('The goal', '<p>Everyone writes one hidden item. The host reveals them all, reads them out twice, then hides them again. Then you catch the writers.</p>') + acquire +
-      sec('Rooms', '<p>Someone starts a room and shares the 4-letter code or the link. Up to 20 players. Everyone gets a random codename, so there are no accounts and nobody sees a real name.</p>') +
-      sec('The host', '<ul><li>One host at a time. After joining, one player taps I’ll host. First tap wins.</li><li>The host picks the category, the word limit and SFW or NSFW, then starts the round.</li><li>The host reveals, reads the answers out twice, then hides them. Show them again whenever you like.</li><li>The host ends the round. The winner then taps I won and becomes the next host, and picks the next category.</li><li>A host can step down before starting. If the host drops, someone can take over after a few seconds.</li></ul>') + words +
-      sec('Categories', '<ul><li>Recommended: suggestions grouped by theme. The most played come first. Tap More to see the rest.</li><li>My own: type any category.</li><li>Every category played in any room is saved, so the list keeps growing.</li><li>Every round needs a category.</li></ul>') + nsfw + writing +
+      sec('Rooms', '<p>Someone starts a room and shares the 4-letter code or the link. Up to 20 players. Everyone gets a random codename, so there are no accounts. You can swap yours for your own name in Settings.</p>') + yourname +
+      sec('The host', '<ul><li>One host at a time. After joining, one player taps I’ll host. First tap wins.</li><li>The host picks the category, the word limit, SFW or NSFW and who sees the answers, then starts the round.</li><li>The host reveals, reads the answers out twice, then hides them. Show them again whenever you like.</li><li>The host ends the round. The winner then taps I won and becomes the next host, and picks the next category.</li><li>A host can step down before starting. If the host drops, someone can take over after a few seconds.</li></ul>') + shide + removing + words +
+      sec('Categories', '<ul><li>Recommended: suggestions grouped by theme. The most played come first. Tap More to see the rest.</li><li>My own: type any category.</li><li>Every round needs a category.</li></ul>') + nsfw + writing + looks +
       sec('Dropped off?', '<p>Reopen the link. Same tab: you are straight back in. New tab or device: tap your codename from the list. Your locked answer is kept.</p>') +
-      sec('Privacy', '<p>Answers live in the room’s memory only. They vanish when the round ends or the room closes. The one thing saved is the category name and how often it gets played. Never answers, never codenames.</p>');
+      sec('Privacy', '<p>Answers live in the room’s memory only. They vanish when the round ends or the room closes. The one thing saved is the category name and how often it gets played. Never answers, never names. Your recent names and display settings stay on your own phone.</p>');
   }
   return '<main class="scr pal-paper"><div class="pad">' + topRow(BACK, 'Rulebook', SPACER) + '<h2 class="disp big">The rules</h2><div class="rb">' +
     '<p class="quote">Write it. Lock it. Nobody peeks.</p>' + body +
@@ -697,15 +856,16 @@ function lobbyView(kind) {
     return '<main class="scr setup pal-yellow' + sp + '"><div class="pad">' + topRow(LEAVE, 'Room', meTag()) + codeBox() +
       '<div class="hostrow"><p class="eyebrow">You’re the host</p><button type="button" class="mini line" data-act="release">Step down</button></div>' +
       '<section class="sec"><h2>In the room · <span data-r="pcount"></span></h2><div class="chips" data-r="players"></div></section>' +
+      (LOCAL ? '' : '<div data-r="uname"></div>') +
       '<div data-r="settings" class="stack" style="gap:16px"></div><div data-r="start" class="startbar"></div></div></main>';
   }
   return '<main class="scr pal-blue' + sp + '"><div class="pad">' + topRow(LEAVE, 'Room', meTag()) + codeBox() +
     '<div data-r="hostcard" class="stack"></div>' +
-    '<section class="sec"><h2 class="who">In the room · <span data-r="pcount"></span></h2><div class="chips" data-r="players"></div></section></div></main>';
+    '<section class="sec"><h2 class="who">In the room · <span data-r="pcount"></span></h2><div class="chips" data-r="players"></div></section>' + (LOCAL ? '' : '<div data-r="uname"></div>') + '</div></main>';
 }
 function promptCard(s) {
   var cat = s.settings.category;
-  return '<div class="prompt-card"><p class="eyebrow">Round ' + s.round + ' · Category</p><h2 class="disp">' + esc(cat ? cat.label : 'Anything goes') + '</h2><div class="tags"><span class="tag">Up to ' + s.settings.words + ' word' + (s.settings.words === 1 ? '' : 's') + '</span>' + (s.settings.spicy ? '<span class="badge18">NSFW</span>' : '') + '</div></div>';
+  return '<div class="prompt-card"><p class="eyebrow">Round ' + s.round + ' · Category</p><h2 class="disp">' + esc(cat ? cat.label : 'Anything goes') + '</h2><div class="tags"><span class="tag">Up to ' + s.settings.words + ' word' + (s.settings.words === 1 ? '' : 's') + '</span>' + (s.settings.spicy ? '<span class="badge18">NSFW</span>' : '') + (s.settings.answers === 'host' ? '<span class="tag">Host-only answers</span>' : '') + '</div></div>';
 }
 function playersSection() {
   if (!LOCAL || !S.snap) return '';
@@ -814,7 +974,7 @@ function settingsHTML() {
       body += groupHTML(g.g, items, g.g + '|' + mk);
     });
   } else {
-    body = '<input class="text-in" id="own" maxlength="60" autocomplete="off" placeholder="e.g. Things in a gym bag" aria-label="Your own category"><p class="note">Anything goes. It joins the community picks other rooms see.</p>';
+    body = '<input class="text-in" id="own" maxlength="60" autocomplete="off" placeholder="e.g. Things in a gym bag" aria-label="Your own category"><p class="note">Anything goes.' + (LOCAL ? ' It joins the community picks other rooms see.' : '') + '</p>';
     if (comm.length) body += groupHTML('Community picks', comm, 'community|' + mk);
   }
   return playersSection() + '<section class="sec"><div class="row"><div><h2>Words per answer</h2><p class="note">1 to 12. Shorter is funnier.</p></div>' +
@@ -823,10 +983,6 @@ function settingsHTML() {
     '<section class="sec"><h2>Category</h2>' + modeSeg + body + '</section>';
 }
 var REGIONS = {
-  music: function () {
-    var on = S.music;
-    return '<button type="button" class="music" data-act="music" aria-pressed="' + on + '" aria-label="' + (on ? 'Music on. Tap to mute' : 'Tap for music') + '"><span class="eq" aria-hidden="true"><b></b><b></b><b></b></span>' + (on ? 'Music on' : 'Tap for music') + '</button>';
-  },
   rejoin: function () {
     var l = S.mode === 'live' && !S.code ? readLast() : null;
     return l ? '<button type="button" class="btn-ghost" data-act="rejoin">Rejoin room ' + esc(l.code) + (l.alias ? ' · ' + esc(l.alias) : '') + '</button>' : '';
@@ -837,10 +993,12 @@ var REGIONS = {
     return '<button class="btn-main" type="submit"' + (ok ? '' : ' disabled') + '>' + (S.joining ? 'Joining…' : 'Join room') + ' ' + I.arrow + '</button>';
   },
   pcount: function () { return S.snap ? S.snap.players.length : 0; },
+  uname: function () { return LOCAL ? '' : nameSection('lobby'); },
+  me: mePill,
   players: function () {
     if (!S.snap) return '';
     return S.snap.players.map(function (p) {
-      return '<span class="pl' + (p.connected ? '' : ' off') + (p.isMe ? ' me' : '') + '">' + esc(p.alias) + (p.isMe ? ' <small>you</small>' : '') + (p.isHost ? ' <small>host</small>' : '') + (p.connected ? '' : ' <small>away</small>') + '</span>';
+      return '<span class="pl' + (p.connected ? '' : ' off') + (p.isMe ? ' me' : '') + '"><span class="pn">' + esc(p.alias) + '</span>' + (p.isMe ? ' <small>you</small>' : '') + (p.isHost ? ' <small>host</small>' : '') + (p.connected ? '' : ' <small>away</small>') + '</span>';
     }).join('');
   },
   hostcard: function () {
@@ -853,13 +1011,13 @@ var REGIONS = {
     }
     var cat = s.settings.category;
     return '<div class="status-card"><p class="eyebrow">' + (s.host.away ? 'Host is away' : 'Hosting') + '</p><h2 class="disp big2">' + esc(s.host.alias) + '</h2>' +
-      '<p class="t">' + (cat ? 'Category: <b>' + esc(cat.label) + '</b>' : 'Picking a category…') + ' · up to ' + s.settings.words + ' word' + (s.settings.words === 1 ? '' : 's') + (s.settings.spicy ? ' · NSFW' : '') + '. The round starts when they tap start.</p></div>' +
+      '<p class="t">' + (cat ? 'Category: <b>' + esc(cat.label) + '</b>' : 'Picking a category…') + ' · up to ' + s.settings.words + ' word' + (s.settings.words === 1 ? '' : 's') + (s.settings.spicy ? ' · NSFW' : '') + (s.settings.answers === 'host' ? ' · host-only answers' : '') + '. The round starts when they tap start.</p></div>' +
       (s.claimable ? '<button type="button" class="btn-ghost" data-act="claim">Host is away. Take over</button>' : '');
   },
   settings: settingsHTML,
   start: function () {
     var c = canStart(), cat = effCategory(), d = S.draft;
-    var line = c.ok ? '<p class="caption">Category: <b>' + esc(cat.label) + '</b> · up to ' + d.words + ' word' + (d.words === 1 ? '' : 's') + (d.spicy ? ' · NSFW' : '') + '</p>' : '<p class="caption">' + esc(c.why) + '</p>';
+    var line = c.ok ? '<p class="caption">Category: <b>' + esc(cat.label) + '</b> · up to ' + d.words + ' word' + (d.words === 1 ? '' : 's') + (d.spicy ? ' · NSFW' : '') + (d.answers === 'host' ? ' · host-only answers' : '') + '</p>' : '<p class="caption">' + esc(c.why) + '</p>';
     return line + '<button type="button" class="btn-main" data-act="begin"' + (c.ok ? '' : ' disabled') + '>Start round ' + I.arrow + '</button>';
   },
   wc: function () {
@@ -889,26 +1047,31 @@ var REGIONS = {
   },
   cardnote: function () {
     var s = S.snap; if (!s) return '';
-    var n = s.orderCount;
-    return s.hidden ? n + ' answer' + (n === 1 ? '' : 's') + ' hidden. Remember them.' : n + ' answer' + (n === 1 ? '' : 's') + ', shuffled. No names.';
+    var n = s.orderCount, pl = n + ' answer' + (n === 1 ? '' : 's');
+    if (s.hidden) return pl + ' hidden. Remember them.';
+    if (!(s.me && s.me.canSee)) return pl + '. Only ' + hostName() + ' sees them.';
+    return pl + ', shuffled. No names.';
   },
   revhint: function () {
     var s = S.snap; if (!s) return '';
-    if (s.me && s.me.isHost) return '<p class="hint">' + (s.hidden ? (LOCAL ? 'Hidden. Quiz the room, then show them again.' : 'Hidden on every phone. Quiz the room, then show them again.') : 'Read them out loud. Twice. Then hit Hide all.') + '</p>';
+    if (s.me && s.me.isHost) return '<p class="hint">' + (s.hidden ? (LOCAL ? 'Hidden. Quiz the room, then show them again.' : 'Hidden on every phone. Quiz the room, then show them again.') : (s.settings.answers === 'host' ? 'Only you see the answers. Read them out loud. Twice.' : 'Read them out loud. Twice. Then hit Hide all.')) + '</p>';
+    if (!s.hidden && !(s.me && s.me.canSee)) return '<p class="hint">Only ' + esc(hostName()) + ' sees the answers. Listen as they read them out. Remember them.</p>';
     return '<p class="hint">' + (s.hidden ? 'Hidden. Who wrote what?' : esc(hostName()) + ' is reading them out. Remember them.') + '</p>';
   },
   cards: function () {
     var s = S.snap; if (!s) return '';
-    if (S.cm === 'closing' && !s.hidden) { clearTimeout(S.closeT); S.cm = 'open'; }
+    var cov = isCovered(s);
+    if (S.cm === 'closing' && !cov) { clearTimeout(S.closeT); S.cm = 'open'; }
     if (S.cm === 'closing') return S.cardsCache;
     var h;
-    if (s.hidden) { S.cm = 'cover'; h = coverHTML(s.orderCount); }
+    if (cov) { S.cm = 'cover'; h = coverHTML(s.orderCount); }
     else { if (S.cm === 'cover') { S.cm = 'closed'; S.flipNext = true; S.confettiNext = false; } h = faceHTML(s.order, S.cm === 'open'); }
     S.cardsCache = h; return h;
   },
   revbar: function () {
     var s = S.snap; if (!s || !s.me) return '';
     if (s.me.isHost) {
+      if (s.settings.answers === 'host') return '<button type="button" class="btn-main" data-act="end">End round ' + I.arrow + '</button>';
       return '<button type="button" class="btn-main" data-act="' + (s.hidden ? 'show' : 'hide') + '">' + (s.hidden ? 'Show all' : 'Hide all') + ' ' + (s.hidden ? I.eye : I.eyeoff) + '</button>' +
         '<button type="button" class="btn-ghost" data-act="end">End round</button>';
     }
@@ -917,7 +1080,8 @@ var REGIONS = {
   }
 };
 var REGION_AFTER = {
-  settings: function (el) { var o = el.querySelector('#own'); if (o) o.value = S.draft.custom; }
+  settings: function (el) { var o = el.querySelector('#own'); if (o) o.value = S.draft.custom; },
+  uname: function (el) { var o = el.querySelector('input'); if (o) o.value = nameValue(); }
 };
 function focusKeyIn(el) {
   var a = document.activeElement;
@@ -950,7 +1114,6 @@ function render() {
     S.key = key; S.locking = false;
     flipTimers.forEach(clearTimeout); flipTimers = [];
     clearTimeout(S.closeT);
-    if (key !== 'home') stopMusic();
     view.innerHTML = viewHTML();
     document.documentElement.style.setProperty('--page', pageColour());
     window.scrollTo(0, 0);
@@ -959,12 +1122,15 @@ function render() {
   patchRegions();
   afterPatch();
   paintSheet(); paintNet();
+  //#if demo
+  paintBar();
+  //#endif
 }
 function afterMount(key) {
   if (key.indexOf('writing') === 0 && (key.indexOf('-O') > 0 || key.indexOf('-write') > 0)) setTimeout(function () { var a = $('#ans'); if (a) try { a.focus({ preventScroll: true }); } catch (e) { a.focus(); } }, 60);
   if (key === 'join') setTimeout(function () { var c = $('#code'); if (c && !S.joining) c.focus(); }, 60);
   if (key.indexOf('revealed') === 0) {
-    S.cm = S.snap && S.snap.hidden ? 'cover' : (S.animateReveal ? 'closed' : 'open');
+    S.cm = isCovered(S.snap) ? 'cover' : (S.animateReveal ? 'closed' : 'open');
     S.flipNext = S.cm === 'closed'; S.confettiNext = S.cm === 'closed'; S.animateReveal = false;
   }
 }
@@ -976,7 +1142,7 @@ function afterPatch() {
   for (var i = 0; i < n; i++) (function (c, i) { flipTimers.push(setTimeout(function () { c.classList.add('open'); }, start + i * gap)); })(cards[i], i);
   var done = start + (n - 1) * gap + 700, withConfetti = S.confettiNext; S.confettiNext = false;
   flipTimers.push(setTimeout(function () {
-    if (S.cm !== 'closed' || !S.snap || S.snap.hidden) return;
+    if (S.cm !== 'closed' || !S.snap || isCovered(S.snap)) return;
     S.cm = 'open';
     var el = view.querySelector('[data-r=cards]'); S.cardsCache = faceHTML(S.snap.order, true); if (el) el._h = S.cardsCache;
     if (withConfetti) confetti();
@@ -997,20 +1163,29 @@ function paintSheet() {
     var lt = LOCAL ? ['Quit the game?', 'This round and its answers are lost.', 'Quit', 'Keep playing'] : ['Leave the room?', (isHost() && S.snap && S.snap.players.length > 1 ? 'Someone else becomes the host. ' : '') + 'You can come back with the code. Your codename is kept for you.', 'Leave', 'Stay'];
     h = '<div class="scrim" data-act="close-bg"><div class="sheet" role="dialog" aria-modal="true" aria-label="' + lt[0] + '"><span class="grab"></span><h3 class="disp">' + lt[0] + '</h3><p>' + lt[1] + '</p><button type="button" class="btn-main" data-act="leave-yes">' + lt[2] + '</button><button type="button" class="btn-ghost" data-act="close">' + lt[3] + '</button></div></div>';
   }
+  if (!LOCAL && S.sheet === 'settings') h = settingsSheetHTML(); else S.rmConfirm = null;
   if (h !== sheetHtml) {
-    $('#sheet').innerHTML = h; sheetHtml = h;
-    if (h) { var b = $('#sheet .btn-main'); if (b) b.focus(); }
+    var box = $('#sheet'), keep = null, a = document.activeElement, wasOpen = !!sheetHtml;
+    if (a && a.id && box.contains(a) && a.tagName === 'INPUT') keep = { id: a.id, s: a.selectionStart, e: a.selectionEnd };
+    box.innerHTML = h; sheetHtml = h;
+    if (!LOCAL) { var u = $('#uname-sheet'); if (u) u.value = nameValue(); }
+    if (keep) { var n = document.getElementById(keep.id); if (n) { try { n.focus({ preventScroll: true }); n.setSelectionRange(keep.s, keep.e); } catch (x) {} } }
+    else if (h && !wasOpen) {
+      var d = S.sheet === 'settings' ? $('#sheet .sheet') : $('#sheet .btn-main');
+      if (d) { try { d.focus({ preventScroll: true }); } catch (x) { d.focus(); } }
+    }
   }
 }
 function go(screen) { S.screen = screen; S.joinErr = ''; render(); }
 
 /* ---------- room flow ---------- */
 function loadLearned() {
+  if (!LOCAL) return Promise.resolve(); // online: fixed order, no play-count ranking
   return modeReady.then(function () { return T.categories(S.draft.spicy); }).then(function (l) { setLearned(l); patchRegions('settings'); }).catch(function () {});
 }
 function draftFromSnap(s) {
   var cat = s.settings.category;
-  S.draft = { words: s.settings.words, spicy: s.settings.spicy, mode: cat && cat.pack === 'custom' ? 'own' : 'rec', category: cat && cat.pack !== 'custom' ? cat : null, custom: cat && cat.pack === 'custom' ? cat.label : '' };
+  S.draft = { words: s.settings.words, spicy: s.settings.spicy, answers: s.settings.answers || 'all', mode: cat && cat.pack === 'custom' ? 'own' : 'rec', category: cat && cat.pack !== 'custom' ? cat : null, custom: cat && cat.pack === 'custom' ? cat.label : '' };
 }
 function onSnap(snap) {
   var prev = S.snap; S.snap = snap;
@@ -1018,8 +1193,8 @@ function onSnap(snap) {
   var wasHostLobby = !!(prev && prev.phase === 'lobby' && prev.me && prev.me.isHost);
   if (snap.phase === 'lobby' && snap.me && snap.me.isHost && !wasHostLobby) { draftFromSnap(snap); loadLearned(); }
   if (prev && prev.phase === 'writing' && snap.phase === 'revealed') S.animateReveal = true;
-  if (prev && prev.phase === 'revealed' && snap.phase === 'revealed' && !prev.hidden && snap.hidden && S.cm === 'open') closeCards();
-  if (snap.phase !== 'lobby') S.sheet = null;
+  if (prev && prev.phase === 'revealed' && snap.phase === 'revealed' && !isCovered(prev) && isCovered(snap) && S.cm === 'open') closeCards();
+  if (snap.phase !== 'lobby' && S.sheet !== 'settings') S.sheet = null;
   if (snap.phase !== 'writing') S.locking = false;
   render();
 }
@@ -1031,7 +1206,7 @@ function enterRoom(code) {
 }
 function subscribe() {
   if (unsub) unsub();
-  unsub = T.subscribe(S.code, onSnap, function (n) { S.net = n; paintNet(); }, function () { toast('That room has ended.'); clearLast(); leaveLocal(); });
+  unsub = T.subscribe(S.code, onSnap, function (n) { S.net = n; paintNet(); }, function (why) { toast(why === 'removed' ? 'The host removed you from the room.' : 'That room has ended.'); clearLast(); leaveLocal(); });
 }
 function leaveLocal() {
   if (unsub) { unsub(); unsub = null; }
@@ -1043,17 +1218,18 @@ function leaveRoom() {
   modeReady.then(function () { return T.act(c, { type: 'leave' }); }).catch(function () {});
 }
 function startRoom() {
-  modeReady.then(function () { return T.create(); }).then(function (r) { S.draft = { words: 4, spicy: false, mode: 'rec', category: null, custom: '' }; enterRoom(r.code); }).catch(function (e) { toast(errMsg(e)); });
+  modeReady.then(function () { return T.create(savedName()); }).then(function (r) { S.draft = { words: 4, spicy: false, answers: 'all', mode: 'rec', category: null, custom: '' }; enterRoom(r.code); }).catch(function (e) { toast(errMsg(e)); });
 }
 // Join by code. If players in a running room dropped off, offer their codenames first.
 function doJoin(code, opts) {
   opts = opts || {};
   S.joining = true; S.joinErr = ''; patchRegions('joinbtn'); patchRegions('joinerr');
   modeReady.then(function () { return opts.takeover || opts.skipPicker ? null : T.info(code); }).then(function (info) {
+    if (info && info.removed) throw { code: 'removed' };
     if (info && !info.member && info.seats && info.seats.length && (info.phase !== 'lobby' || info.round > 0)) {
       S.joining = false; S.seats = info.seats; S.seatsCode = code; S.screen = 'seats'; render(); return null;
     }
-    return T.join(code, opts.takeover).then(function () { S.joining = false; enterRoom(code); });
+    return T.join(code, opts.takeover, opts.takeover ? undefined : savedName()).then(function () { S.joining = false; enterRoom(code); });
   }).catch(function (e) {
     S.joining = false; S.joinErr = errMsg(e);
     if (e.code === 'no_room') { ss.del('acq_room'); if (readLast() && readLast().code === code) clearLast(); }
@@ -1067,7 +1243,7 @@ function pushSettings(now) {
   var send = function () {
     if (!S.code || !isHost() || S.snap.phase !== 'lobby') return;
     var d = S.draft;
-    T.act(S.code, { type: 'settings', words: d.words, spicy: d.spicy, category: effCategory() }).catch(function () {});
+    T.act(S.code, { type: 'settings', words: d.words, spicy: d.spicy, answers: d.answers, category: effCategory() }).catch(function () {});
   };
   if (now) send(); else pushTimer = setTimeout(send, 250);
 }
@@ -1088,10 +1264,6 @@ function send(action) { return T.act(S.code, action).catch(function (e) { toast(
 
 /* ---------- actions ---------- */
 var ACT = {
-  music: function () {
-    if (S.music) { S.music = false; Music.stop(); } else { S.music = Music.start(); }
-    patchRegions('music');
-  },
   start: function () { startRoom(); },
   join: function () { S.joinCode = ''; go('join'); },
   rejoin: function () { var l = readLast(); if (l) doJoin(l.code, { takeover: l.alias || undefined, skipPicker: true }); },
@@ -1110,6 +1282,7 @@ var ACT = {
   release: function () { clearTimeout(pushTimer); send({ type: 'release' }); },
   'w-': function () { S.draft.words = Math.max(1, S.draft.words - 1); draftChanged(); },
   'w+': function () { S.draft.words = Math.min(12, S.draft.words + 1); draftChanged(); },
+  answers: function (t) { S.draft.answers = t.getAttribute('data-v') === 'host' ? 'host' : 'all'; draftChanged(); paintSheet(); },
   content: function (t) {
     var nsfw = t.getAttribute('data-v') === 'nsfw';
     if (nsfw === S.draft.spicy) return;
@@ -1141,7 +1314,7 @@ var ACT = {
   begin: function () {
     var c = canStart(); if (!c.ok) { if (c.why) toast(c.why); return; }
     var d = S.draft; clearTimeout(pushTimer);
-    send({ type: 'start', settings: { words: d.words, spicy: d.spicy, category: effCategory() } });
+    send({ type: 'start', settings: { words: d.words, spicy: d.spicy, answers: d.answers, category: effCategory() } });
   },
   lock: function () {
     var a = curAns(); if (!a.ok || S.locking) return;
@@ -1157,7 +1330,26 @@ var ACT = {
   end: function () { send({ type: 'end' }); },
   flip: function (t) { if (!t.classList.contains('cover')) t.classList.add('open'); }
 };
+//#if online
+ACT.settings = function () { S.sheet = 'settings'; S.nameDraft = null; S.rmConfirm = null; paintSheet(); };
+ACT['name-pick'] = function (t) { setName(t.getAttribute('data-n')); };
+ACT.size = function (t) { S.ui.size = t.getAttribute('data-v'); ls.set(UI_KEY, JSON.stringify(S.ui)); applyUI(); paintSheet(); };
+ACT.theme = function (t) { S.ui.theme = t.getAttribute('data-v'); ls.set(UI_KEY, JSON.stringify(S.ui)); applyUI(); paintSheet(); };
+ACT.rm = function (t) { S.rmConfirm = t.getAttribute('data-a'); paintSheet(); };
+ACT['rm-no'] = function () { S.rmConfirm = null; paintSheet(); };
+ACT['rm-yes'] = function (t) {
+  var a = t.getAttribute('data-a'); S.rmConfirm = null; paintSheet();
+  T.act(S.code, { type: 'kick', alias: a }).then(function () { toast(a + ' was removed.'); }).catch(function (e) { toast(errMsg(e)); });
+};
+//#endif
 
+//#if demo
+(function () {
+  var bar = $('#demobar'); if (!bar) return;
+  bar.addEventListener('click', function (e) { var b = e.target.closest ? e.target.closest('[data-dpid]') : null; if (b) demoSwitch(b.getAttribute('data-dpid')); });
+  bar.addEventListener('change', function (e) { if (e.target.id === 'dbauto') Demo.auto(e.target.checked); });
+})();
+//#endif
 var app = $('#app');
 app.addEventListener('click', function (e) {
   var t = e.target.closest ? e.target.closest('[data-act]') : null;
@@ -1168,6 +1360,7 @@ app.addEventListener('input', function (e) {
   var t = e.target;
   if (t.id === 'ans') { patchRegions('wc'); patchRegions('lockbtn'); }
   else if (t.id === 'own') { S.draft.custom = t.value; patchRegions('start'); pushSettings(false); }
+  else if (t.id && t.id.indexOf('uname-') === 0) { S.nameDraft = t.value; }
   else if (t.id === 'code') {
     var v = t.value.replace(/[^A-Za-z]/g, '').toUpperCase().slice(0, 4);
     if (v !== t.value) t.value = v;
@@ -1176,7 +1369,11 @@ app.addEventListener('input', function (e) {
 });
 app.addEventListener('submit', function (e) {
   e.preventDefault();
-  if (e.target.getAttribute('data-form') === 'join' && S.joinCode.length === 4 && !S.joining) doJoin(S.joinCode);
+  var fm = e.target.getAttribute('data-form');
+  if (fm === 'join' && S.joinCode.length === 4 && !S.joining) doJoin(S.joinCode);
+  //#if online
+  if (fm === 'name') { var ni = e.target.querySelector('input'); if (ni) setName(ni.value); }
+  //#endif
 });
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Enter' && e.target && e.target.id === 'ans') { e.preventDefault(); ACT.lock(); }
@@ -1207,6 +1404,9 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(function (
 if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', function () { setTimeout(checkFonts, 150); });
 
 /* ---------- boot ---------- */
+//#if online
+loadUI(); applyUI();
+//#endif
 render();
 modeReady.then(function (m) {
   if (m !== 'live') return;

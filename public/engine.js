@@ -12,7 +12,7 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
 
-  var MIN_PLAYERS = 2, MAX_PLAYERS = 20, MAX_WORDS = 12, MAX_CHARS = 140, DEFAULT_WORDS = 4;
+  var MIN_PLAYERS = 2, MAX_PLAYERS = 20, MAX_WORDS = 12, MAX_CHARS = 140, DEFAULT_WORDS = 4, MAX_NAME = 16;
   var CLAIM_AFTER_MS = 10000; // an away host can be replaced after this long
   var ADJ = ['Quiet', 'Sneaky', 'Cosmic', 'Velvet', 'Rusty', 'Sunny', 'Nimble', 'Mellow', 'Zesty', 'Frosty',
     'Lucky', 'Dusty', 'Breezy', 'Jolly', 'Cheeky', 'Sleepy', 'Brave', 'Wobbly', 'Golden', 'Mighty'];
@@ -44,34 +44,52 @@
     for (var i = 0; i < room.players.length; i++) if (room.players[i].pid === pid) return room.players[i];
     return null;
   }
+  // Display names: 16 characters (by code point), unique in the room regardless of case.
+  function clipName(t) { return Array.from(clean(t, 80)).slice(0, MAX_NAME).join('').trim(); }
+  function nameTaken(room, self, name) {
+    var k = name.toLowerCase();
+    return room.players.some(function (q) { return q !== self && q.alias.toLowerCase() === k; });
+  }
+  // Blank = the player's random codename. A clash gets " 2", " 3" ...
+  function pickName(room, p, raw) {
+    var want = clipName(raw) || p.base, name = want, n = 2;
+    while (nameTaken(room, p, name)) {
+      var suf = ' ' + n++;
+      name = Array.from(want).slice(0, MAX_NAME - suf.length).join('').trim() + suf;
+    }
+    return name;
+  }
   function uniqueAlias(room) {
-    var used = {}; room.players.forEach(function (p) { used[p.alias] = 1; });
+    var used = {}; room.players.forEach(function (p) { used[p.alias.toLowerCase()] = 1; used[p.base.toLowerCase()] = 1; });
     for (var i = 0; i < 40; i++) {
       var a = ADJ[rand(ADJ.length)] + ' ' + ANI[rand(ANI.length)];
-      if (!used[a]) return a;
+      if (!used[a.toLowerCase()]) return a;
     }
     return 'Guest ' + (room.players.length + 1);
   }
   function err(code, extra) { var e = { ok: false, error: code }; if (extra) for (var k in extra) e[k] = extra[k]; return e; }
   function touch(room, now) { room.updatedAt = now; }
 
-  function createRoom(code, creatorPid, now) {
+  function createRoom(code, creatorPid, now, name) {
     var room = {
       code: code, hostPid: null, createdAt: now, updatedAt: now,
       phase: 'lobby', round: 0, revealedAt: 0, hidden: false,
-      settings: { words: DEFAULT_WORDS, spicy: false, category: null },
-      players: [], order: null
+      settings: { words: DEFAULT_WORDS, spicy: false, category: null, answers: 'all' },
+      players: [], order: null, removed: {}
     };
-    addPlayer(room, creatorPid, now);
+    addPlayer(room, creatorPid, now, name);
     return room;
   }
 
-  function addPlayer(room, pid, now) {
+  function addPlayer(room, pid, now, name) {
     var p = find(room, pid);
     if (p) { p.connected = true; p.offAt = 0; touch(room, now); return { ok: true, alias: p.alias, rejoined: true }; }
+    if (room.removed && room.removed[pid]) return err('removed');
     if (room.players.length >= MAX_PLAYERS) return err('room_full');
-    p = { pid: pid, alias: uniqueAlias(room), connected: true, offAt: 0, joinedAt: now, locked: false, entry: null };
+    var base = uniqueAlias(room);
+    p = { pid: pid, alias: base, base: base, connected: true, offAt: 0, joinedAt: now, locked: false, entry: null };
     room.players.push(p);
+    if (name) p.alias = pickName(room, p, name);
     touch(room, now);
     return { ok: true, alias: p.alias };
   }
@@ -79,6 +97,7 @@
   // A returning player (new tab or device) takes over a codename whose owner is offline.
   function takeSeat(room, newPid, alias, now) {
     if (find(room, newPid)) return addPlayer(room, newPid, now);
+    if (room.removed && room.removed[newPid]) return err('removed');
     var seat = null;
     room.players.forEach(function (p) { if (p.alias === alias) seat = p; });
     if (!seat) return err('no_seat');
@@ -148,6 +167,7 @@
         var s = a.type === 'start' ? (a.settings || {}) : a;
         if (s.words != null) room.settings.words = clamp(parseInt(s.words, 10) || DEFAULT_WORDS, 1, MAX_WORDS);
         if (s.spicy != null) room.settings.spicy = !!s.spicy;
+        if (s.answers != null) room.settings.answers = s.answers === 'host' ? 'host' : 'all';
         if (s.category !== undefined) room.settings.category = cleanCategory(s.category);
         var c = room.settings.category;
         if (c && ((c.pack === 'nsfw' && !room.settings.spicy) || (c.pack === 'pg13' && room.settings.spicy))) room.settings.category = null;
@@ -202,6 +222,22 @@
         room.settings.category = null;
         break;
       }
+      case 'rename': {
+        p.alias = pickName(room, p, a.name);
+        break;
+      }
+      case 'kick': {
+        if (!isHost) return err('host_only');
+        var target = null;
+        room.players.forEach(function (q) { if (q.alias === a.alias) target = q; });
+        if (!target) return err('no_player');
+        if (target.pid === pid) return err('cant_remove_self');
+        room.players = room.players.filter(function (q) { return q !== target; });
+        if (!room.removed) room.removed = {};
+        room.removed[target.pid] = true;
+        effects.push({ type: 'removed', pid: target.pid });
+        break;
+      }
       case 'leave': {
         var wasHost = room.hostPid === pid;
         if (room.phase === 'lobby') {
@@ -223,20 +259,22 @@
   }
 
   // What one player is allowed to see. Entries stay private until the reveal,
-  // and again while the host has them hidden.
+  // again while the host has them hidden, and always from non-hosts in host-only mode.
   function snapshot(room, pid, now) {
     now = now || Date.now();
     var me = find(room, pid), host = find(room, room.hostPid);
     var connected = room.players.filter(function (p) { return p.connected; });
     var lockedCount = room.players.filter(function (p) { return p.locked; }).length;
-    var showOrder = room.phase === 'revealed' && !room.hidden && room.order;
+    // answers: 'all' = every phone shows them; 'host' = only the current host's phone gets them.
+    var canSee = room.settings.answers !== 'host' || room.hostPid === pid;
+    var showOrder = room.phase === 'revealed' && !room.hidden && room.order && canSee;
     return {
       code: room.code, phase: room.phase, round: room.round, revealedAt: room.revealedAt, hidden: !!room.hidden,
-      settings: { words: room.settings.words, spicy: room.settings.spicy, category: room.settings.category },
+      settings: { words: room.settings.words, spicy: room.settings.spicy, category: room.settings.category, answers: room.settings.answers },
       limits: { minPlayers: MIN_PLAYERS, maxPlayers: MAX_PLAYERS, maxWords: MAX_WORDS },
       host: host ? { alias: host.alias, away: !host.connected } : null,
       claimable: claimable(room, pid, now),
-      me: me ? { alias: me.alias, isHost: room.hostPid === pid, locked: me.locked } : null,
+      me: me ? { alias: me.alias, base: me.base || me.alias, custom: me.alias !== (me.base || me.alias), isHost: room.hostPid === pid, locked: me.locked, canSee: canSee } : null,
       players: room.players.map(function (p) {
         return { alias: p.alias, isHost: p.pid === room.hostPid, locked: p.locked, connected: p.connected, isMe: p.pid === pid };
       }),
@@ -252,13 +290,14 @@
     var member = !!find(room, pid);
     return {
       phase: room.phase, round: room.round, full: room.players.length >= MAX_PLAYERS, member: member,
+      removed: !!(room.removed && room.removed[pid]),
       seats: member ? [] : room.players.filter(function (p) { return !p.connected; }).map(function (p) { return { alias: p.alias }; })
     };
   }
 
   return {
-    MIN_PLAYERS: MIN_PLAYERS, MAX_PLAYERS: MAX_PLAYERS, MAX_WORDS: MAX_WORDS, DEFAULT_WORDS: DEFAULT_WORDS,
+    MIN_PLAYERS: MIN_PLAYERS, MAX_PLAYERS: MAX_PLAYERS, MAX_WORDS: MAX_WORDS, DEFAULT_WORDS: DEFAULT_WORDS, MAX_NAME: MAX_NAME,
     createRoom: createRoom, addPlayer: addPlayer, takeSeat: takeSeat, setConnected: setConnected, promoteHost: promoteHost,
-    act: act, snapshot: snapshot, info: info, find: find, clean: clean, cleanCategory: cleanCategory, shuffle: shuffle
+    act: act, snapshot: snapshot, info: info, find: find, clean: clean, clipName: clipName, cleanCategory: cleanCategory, shuffle: shuffle
   };
 });
