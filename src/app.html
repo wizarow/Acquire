@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#2B2FE0">
 <meta name="description" content="Acquire: hidden items, anonymous writers. Catch them all.">
 <title>Acquire</title>
@@ -127,7 +127,11 @@ button{-webkit-appearance:none;appearance:none}
 .join-form{display:flex;flex-direction:column;gap:14px}
 .seatlist{display:flex;flex-direction:column;gap:10px}
 .seat{min-height:64px;border-radius:20px;border:3px solid var(--fg);background:transparent;color:var(--fg);font-family:var(--display);font-weight:900;font-size:32px;text-transform:uppercase;cursor:pointer;text-align:left;padding:0 22px}
+//#if online
+@media (hover:hover) and (pointer:fine){.seat:hover{background:var(--fg);color:var(--bg)}}
+//#else
 .seat:hover{background:var(--fg);color:var(--bg)}
+//#endif
 
 /* ---------- room: lobby ---------- */
 .setup .pad{gap:16px}
@@ -234,7 +238,10 @@ button{-webkit-appearance:none;appearance:none}
 
 //#if online
 /* ---------- online only: text size, colour schemes, settings sheet ---------- */
-html{--fs:1}
+html{--fs:1;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+/* Touch: no double-tap delay on anything tappable; buttons are not text-selectable (answers and names stay selectable). */
+button,[data-act]{touch-action:manipulation}
+button{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 html[data-size=l]{--fs:1.15}
 html[data-size=xl]{--fs:1.3}
 html[data-size=xxl]{--fs:1.5}

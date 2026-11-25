@@ -131,11 +131,17 @@ function serveStatic(req, res, pathname) {
   if (!file.startsWith(PUBLIC_DIR + path.sep)) { res.writeHead(403); return res.end('Forbidden'); }
   fs.readFile(file, (e, buf) => {
     if (e) { res.writeHead(404, { 'Content-Type': 'text/plain' }); return res.end('Not found'); }
-    res.writeHead(200, {
+    // ETag = hash of the file, so unchanged files answer 304 (no body) instead of refetching.
+    const etag = '"' + crypto.createHash('sha1').update(buf).digest('base64url').slice(0, 22) + '"';
+    const headers = {
       'Content-Type': MIME[path.extname(file)] || 'application/octet-stream',
       'Cache-Control': rel === '/index.html' ? 'no-cache' : 'public, max-age=300',
+      'ETag': etag,
       'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer', 'Content-Security-Policy': CSP
-    });
+    };
+    const inm = req.headers['if-none-match'];
+    if (inm && inm.split(',').some(t => t.trim().replace(/^W\//, '') === etag)) { res.writeHead(304, headers); return res.end(); }
+    res.writeHead(200, headers);
     res.end(buf);
   });
 }
